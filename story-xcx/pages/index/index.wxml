@@ -1,0 +1,9 @@
+<!--index.wxml-->
+<view class="container">
+  <view>我的故事汇</view>
+  <block  class="story-list" wx:for="{{storyList}}">
+    <view class="story" bindtap="goStory" id="{{item.id}}">
+    {{item.index}}<text>{{item.name}}</text>
+    </view>
+  </block >
+</view>

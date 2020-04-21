@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<view class="container">
+  <audio src="{{story.url}}" controls="true" poster="{{story.image}}" name="{{story.name}}"></audio>
+</view>

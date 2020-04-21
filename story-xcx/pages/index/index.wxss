@@ -1,0 +1,15 @@
+/**index.wxss**/
+.story-list {
+  width: 100%;
+  display: block;
+  align-items: left;
+}
+
+.sotry {
+  width: 90%;
+  height: 128rpx;
+  margin: 20rpx;
+  padding-left: 100rpx;
+  border-radius: 50%;
+  border: 5rpx;
+}
