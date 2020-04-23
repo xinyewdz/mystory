@@ -1,15 +1,16 @@
 /**index.wxss**/
-.story-list {
+.story-list{
   width: 100%;
   display: block;
   align-items: left;
 }
 
-.sotry {
+.story-v{
   width: 90%;
-  height: 128rpx;
-  margin: 20rpx;
-  padding-left: 100rpx;
-  border-radius: 50%;
-  border: 5rpx;
+  height: 50rpx;
+  display: inline-block;
+  border-width: 0 0 4rpx 0;
+  margin: 10rpx 10rpx 10rpx 10rpx;
+  border-color:#ccc;
+  border-style: solid;
 }

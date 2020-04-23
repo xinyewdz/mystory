@@ -1,0 +1,20 @@
+<view class="container">
+  <form id="form">
+  <view>
+      <label for="file">名称</label>:<input type="text" id="name" bindblur="nameEvent"></input>
+    </view>
+    <view>
+        <label for="image">音频文件</label>
+        <view class="upload" bindtap="chooseAudio">
+          <audio style="width:200rpx;height:200rpx;" src="{{audioPath}}" controls="true" name="{{audio.Name}}" ></audio>
+        </view>
+    </view>
+     <view>
+      <label for="image">封面文件</label>:
+      <view class="upload" bindtap="chooseImg">
+        <image style="width:200rpx;height:200rpx;" src="{{image}}"></image>
+      </view>
+    </view>
+    <button bindtap="saveStory">上传</button>
+  </form>
+</view>

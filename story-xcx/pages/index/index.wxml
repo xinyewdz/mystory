@@ -1,9 +1,7 @@
 <!--index.wxml-->
 <view class="container">
   <view>我的故事汇</view>
-  <block  class="story-list" wx:for="{{storyList}}">
-    <view class="story" bindtap="goStory" id="{{item.id}}">
-    {{item.index}}<text>{{item.name}}</text>
-    </view>
-  </block >
+  <scroll-view class="story-list" scroll-y="true" style="height: 500rpx;">
+      <view wx:for="{{storyList}}" class="story-v" bindtap="goStory" id="{{item.id}}">{{item.name}}</view>
+  </scroll-view>
 </view>

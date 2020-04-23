@@ -1,7 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/story/play"
+    "pages/index/tabbar",
+    "pages/story/play",
+    "pages/my/my"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -10,5 +12,18 @@
     "navigationBarTextStyle":"black"
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "tabBar":{
+      "custom": false,
+      "color": "#000000",
+      "selectedColor": "#000000",
+      "list": [{
+        "pagePath": "pages/index/index",
+        "text": "列表"
+      }, {
+        "pagePath": "pages/my/my",
+        "text": "我的"
+      }]
+    },
+    "usingComponents": {}
 }

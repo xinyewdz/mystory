@@ -6,7 +6,7 @@ type ApiResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func (ar ApiResponse ) Success(data interface{}){
+func (ar *ApiResponse) Success(data interface{}){
 	ar.Data = data
 	ar.Code = "200"
 }
