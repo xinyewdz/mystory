@@ -1,4 +1,13 @@
 
-<view class="container">
-  <audio src="{{story.url}}" controls="true" poster="{{story.image}}" name="{{story.name}}"></audio>
+<view class="page">
+  <view class="weui-cell">
+    <view class="weui-cell_bd">名称:</view>
+    <view class="weui-cell_bd">{{story.name}}</view>
+  </view>
+  <view class="weui-cell">
+    <audio src="{{story.url}}" controls="true" poster="{{story.image}}" name="{{story.name}}"></audio>
+  </view>
+  <view class="weui-cell">
+    <a class="weui-btn weui-btn_primary" bindtap="remove" data-id="{{story.id}}">删除</a>
+  </view>
 </view>

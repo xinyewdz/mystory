@@ -37,6 +37,7 @@ func main(){
 	mux.HandleFunc("/story",http.HandlerFunc(detail))
 	mux.HandleFunc("/upload",http.HandlerFunc(upload))
 	mux.HandleFunc("/save",http.HandlerFunc(saveStory))
+	mux.HandleFunc("/remove",http.HandlerFunc(remove))
 	http.ListenAndServe(":8060",mux)
 }
 
@@ -94,6 +95,20 @@ func list(resp http.ResponseWriter,req *http.Request){
 		sl = append(sl,*story)
 	}
 	ar.Success(sl)
+	data,_ := json.Marshal(ar)
+	resp.Write(data)
+}
+
+func remove(resp http.ResponseWriter,req *http.Request){
+	req.ParseForm()
+	idStr := req.Form.Get("id")
+	id,_ := strconv.Atoi(idStr)
+	key := strconv.Itoa(id)
+	log.Println("remove:"+idStr)
+	ld.Delete([]byte(key),nil)
+	ar := &common.ApiResponse{
+	}
+	ar.Success(nil)
 	data,_ := json.Marshal(ar)
 	resp.Write(data)
 }

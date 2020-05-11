@@ -37,6 +37,11 @@ Page({
             if(respData.code=="200"){
               wx.switchTab({
                 url: '../index/index',
+                success:function(){
+                  var page = getCurrentPages().pop()
+                  if(page==undefined||page==null) return;
+                  page.onLoad();
+                }
               })
             }
           }

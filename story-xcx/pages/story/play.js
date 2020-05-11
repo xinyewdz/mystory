@@ -29,5 +29,23 @@ Page({
         }
       }
     })
+  },
+  remove:function(event){
+      var id = event.currentTarget.dataset.id;
+      console.log("remove "+id);
+      wx.request({
+        url: app.host+'/remove?id='+id,
+        success:function(resp){
+          var respData = resp.data
+          wx.switchTab({
+            url: '../index/index',
+            success:function(){
+              var page = getCurrentPages().pop()
+              if(page==undefined||page==null) return;
+              page.onLoad();
+            }
+          })
+        }
+      })
   }
 })
