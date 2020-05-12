@@ -43,15 +43,16 @@ func main(){
 
 func upload(resp http.ResponseWriter,req *http.Request){
 	req.ParseMultipartForm(1024*1024*100)
-	file,fh,_ := req.FormFile("name")
+	file,fh,_ := req.FormFile("file")
 	fileName := fh.Filename
 	name := req.Form.Get("name")
 	fileType := fileName[strings.LastIndex(fileName,".")+1:]
-	filePath := util.UpyunUpload(file,name+"."+fileType)
+	uploadPath := "/mystory/"+name+"."+fileType
+	fUrl := util.UpyunUpload(file,uploadPath)
 	ar := &common.ApiResponse{
 		Data:"",
 	}
-	ar.Success(filePath)
+	ar.Success(fUrl)
 	data,_ := json.Marshal(ar)
 	resp.Write(data)
 }

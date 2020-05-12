@@ -9,6 +9,8 @@ import (
 )
 
 var(
+	downloadHost = "http://up.wenqiuqiu.com"
+	nameSpace = "aaronimage/"
 	host = ""
 	user = ""
 	password = ""
@@ -32,11 +34,11 @@ func init(){
 	password = confMap["upyun.password"]
 }
 
-func UpyunUpload(read io.ReadCloser,name string)string{
-	path := "/aaronimage/mystory/"+name;
+func UpyunUpload(read io.ReadCloser,path string)string{
+	uploadPath := nameSpace+path;
 	client := &http.Client{}
-	req, _ := http.NewRequest("POST", host+path, read)
+	req, _ := http.NewRequest("POST", host+uploadPath, read)
 	req.SetBasicAuth(user, password)
 	client.Do(req)
-	return path
+	return downloadHost+path
 }

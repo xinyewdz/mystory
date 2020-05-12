@@ -58,8 +58,9 @@ Page({
       formData:{
         "name":name
       },
-      success:function(respData,code){
-        let fp = respData.data.data;
+      success:function(res,code){
+        let resData = JSON.parse(res.data);
+        let fp = resData.data;
         console.log("upload success.fp="+fp);
         callback(fp);
       },
