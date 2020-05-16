@@ -41,6 +41,14 @@ func main(){
 	http.ListenAndServe(":8060",mux)
 }
 
+func adminName(resp http.ResponseWriter,req *http.Request){
+	ar := &common.ApiResponse{
+	}
+	ar.Success("aaron");
+	data,_ := json.Marshal(ar)
+	resp.Write(data)
+}
+
 func upload(resp http.ResponseWriter,req *http.Request){
 	req.ParseMultipartForm(1024*1024*100)
 	file,fh,_ := req.FormFile("file")
