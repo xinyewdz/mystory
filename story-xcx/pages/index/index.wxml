@@ -1,11 +1,20 @@
 <!--index.wxml-->
 <view class="page">
-  <view class="page__hd">
-    <view class="page_title">我的故事汇</view>
-  </view>
-  <view class="page_bd">
-    <scroll-view class="story-list" scroll-y="true" style="height: 500rpx;">
-      <view wx:for="{{storyList}}" class="weui-cell" bindtap="goStory" id="{{item.id}}">{{item.name}}</view>
-    </scroll-view>
+  <view class="weui-panel">
+    <view class="weui-panel__hd">故事汇</view>
+    <view class="weui-pannel__bd">
+      <view class="weui-media-box weui-media-box_small-appmsg">
+        <scroll-view class="weui-cells" scroll-y="true" style="height: 500rpx;">
+          <view wx:for="{{storyList}}" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" bindtap="goStory" id="{{item.id}}">
+            <view class="weui-cell__hd">
+              <image style="width: 20px; height: 20px; margin-right: 16px; display: block;" src="{{item.image}}"></image>
+            </view>
+            <view class="weui-cell__bd weui-cell_primary">
+              <p>{{item.name}}</p>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
   </view>
 </view>
