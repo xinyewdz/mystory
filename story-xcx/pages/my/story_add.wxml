@@ -1,35 +1,39 @@
 <view class="page">
-  <view class="weui-form">
-  <form id="form">
-  <view class="weui-cells weui-cells_form">
-    <view class="weui-cell weui-cell_active">
-        <view class="weui-cell__hd">
-          <label for="file" class="weui-label">名称:</label>
+  <form id="form" bindsubmit="saveStory">
+  <view class="weui-cells__group weui-cells__group_form">
+    <view class="weui-cells__title">添加故事</view>
+    <view class="weui-cells weui-cells_form">
+      <view class="weui-cell weui-cell_active">
+          <view class="weui-cell__hd">
+            <label class="weui-label">名称:</label>
+          </view>
+          <view class="weui-cell__bd weui-flex">
+              <input type="text" id="name" bindblur="nameEvent" class="weui-input" placeholder="请输入故事名称"></input>
+          </view>
         </view>
-        <view class="weui-cell__bd">
-          <input type="text" id="name" bindblur="nameEvent" class="weui-input"></input>
+        <view class=" weui-cell weui-cell_active">
+          <view class="weiui-cell__hd">
+            <label class="weui-label">音频文件:</label>
+          </view>
+          <view class="weui-cell__bd  weui-flex" bindtap="chooseAudio">
+            <input class="weui-input" value="{{audioName}}" placeholder="选择音频文件" disabled></input>
+          </view>
+        </view>
+        <view class=" weui-cell weui-cell_active">
+          <view class="weiui-cells__title">
+            <label class="weui-label">封面文件:</label>
+          </view>
+          <view class="weui-cells">
+            <view class="weui-cell__bd weui-flex" bindtap="chooseImg">
+              <image style="width:200rpx;height:200rpx;" src="{{image}}"></image>
+            </view>
+          </view>
+          
+        </view>
+        <view class="weui-form__opr-area">
+          <a class="weui-btn weui-btn_primary">确定</a>
         </view>
       </view>
-      <view class=" weui-cell weui-cell_active">
-        <view class="weiui-cell__hd">
-          <label for="" class="weui-label">音频文件:</label>
-        </view>
-        <view class="weui-cell__bd" bindtap="chooseAudio">
-          <input class="weui-input" value="{{audioName}}" disabled></input>
-        </view>
-      </view>
-      <view class=" weui-cell weui-cell_active">
-        <view class="weiui-cell__hd">
-          <label for="" class="weui-label">封面文件:</label>
-        </view>
-        <view class="weui-cell__bd" bindtap="chooseImg">
-          <image style="width:200rpx;height:200rpx;" src="{{image}}"></image>
-        </view>
-      </view>
-      <view class="weui-form__opr-area">
-        <a class="weui-btn weui-btn_primary" bindtap="saveStory">确定</a>
-      </view>
-      </view>
+    </view>
   </form>
-  </view>
 </view>

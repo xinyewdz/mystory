@@ -2,7 +2,7 @@
 const app = getApp()
 Page({
   data: {
-    isAdmin:false,
+    isAdmin:true,
     login:false,
     adminName:"aaron",
     user:{}

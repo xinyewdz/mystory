@@ -30,7 +30,7 @@ func init(){
 		confMap[datas[0]] = datas[1]
 	}
 	host = confMap["upyun.host"]
-	user = confMap["upyun.user"]
+	user = confMap["upyun.userdao"]
 	password = confMap["upyun.password"]
 }
 

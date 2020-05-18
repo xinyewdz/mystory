@@ -1,137 +1,54 @@
 package main
 
 import (
-	"bufio"
-	"encoding/json"
-	"github.com/syndtr/goleveldb/leveldb"
-	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"story-api/common"
-	"story-api/util"
-	"strconv"
-	"strings"
-	"time"
+	"story-api/web"
 )
 
 
 var(
-	ld *leveldb.DB
+	storyWeb = new(web.StoryWeb)
+	userWeb = new(web.UserWeb)
 )
 
 func init(){
-	ld,_= leveldb.OpenFile("conf/story.db",nil)
 }
 
 func main(){
 	mux := http.NewServeMux()
-	mux.HandleFunc("/list",http.HandlerFunc(list))
-	mux.HandleFunc("/story",http.HandlerFunc(detail))
-	mux.HandleFunc("/upload",http.HandlerFunc(upload))
-	mux.HandleFunc("/save",http.HandlerFunc(saveStory))
-	mux.HandleFunc("/remove",http.HandlerFunc(remove))
-	http.ListenAndServe(":8060",mux)
+	regist(mux)
+	port := "8060"
+	log.Printf("server start at:%s\n",port)
+	http.ListenAndServe(":"+port,mux)
 }
 
-func adminName(resp http.ResponseWriter,req *http.Request){
-	ar := &common.ApiResponse{
+func regist(mux *http.ServeMux){
+	routeMap := make(map[string]web.RouterHttpHandler)
+	registStory(routeMap)
+	registUser(routeMap)
+	for k,v := range routeMap{
+		mux.Handle(k,v)
 	}
-	ar.Success("aaron");
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
 }
 
-func upload(resp http.ResponseWriter,req *http.Request){
-	req.ParseMultipartForm(1024*1024*100)
-	file,fh,_ := req.FormFile("file")
-	fileName := fh.Filename
-	name := req.Form.Get("name")
-	fileType := fileName[strings.LastIndex(fileName,".")+1:]
-	uploadPath := "/mystory/"+name+"."+fileType
-	fUrl := util.UpyunUpload(file,uploadPath)
-	ar := &common.ApiResponse{
-		Data:"",
-	}
-	ar.Success(fUrl)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+func registStory(routeMap map[string]web.RouterHttpHandler){
+	routeMap["/list"] = storyWeb.List
+	routeMap["/detail"] = storyWeb.Detail
+	routeMap["/upload"] = storyWeb.Upload
+	routeMap["/save"] = storyWeb.Save
+	routeMap["/remove"] = storyWeb.Remove
+
 }
 
-func saveStory(resp http.ResponseWriter,req *http.Request){
-	//req.ParseMultipartForm(1024*1024*10)
-	data,_ := ioutil.ReadAll(req.Body)
-	dataMap := make(map[string]string)
-	json.Unmarshal(data,&dataMap)
-	name := dataMap["name"]
-	audio := dataMap["audio"]
-	image := dataMap["image"]
-	story := &Story{}
-	story.Name = name
-	story.Image = image
-	story.Url = audio
-	story.Id = time.Now().Unix()
-	idStr := strconv.Itoa(int(story.Id))
-	sj,_ := json.Marshal(story)
-	ld.Put([]byte(idStr),sj,nil)
-	ar := &common.ApiResponse{
-		Data:0,
-	}
-	ar.Success(story.Id)
-	respData,_ := json.Marshal(ar)
-	resp.Write(respData)
+func registUser(routeMap map[string]web.RouterHttpHandler){
+	routeMap["/adminName"] = userWeb.AdminName
+	routeMap["/detail"] = userWeb.Detail
+	routeMap["/list"] = userWeb.List
+	routeMap["/save"] = userWeb.Save
+	routeMap["/remove"] = userWeb.Remove
 }
 
 
-
-func list(resp http.ResponseWriter,req *http.Request){
-	ar := &common.ApiResponse{
-		Data:&[]Story{},
-	}
-	sl := []Story{}
-	iterator := ld.NewIterator(nil,nil)
-	for iterator.Next(){
-		data := iterator.Value()
-		story := &Story{}
-		json.Unmarshal(data,&story)
-		sl = append(sl,*story)
-	}
-	ar.Success(sl)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
-}
-
-func remove(resp http.ResponseWriter,req *http.Request){
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	key := strconv.Itoa(id)
-	log.Println("remove:"+idStr)
-	ld.Delete([]byte(key),nil)
-	ar := &common.ApiResponse{
-	}
-	ar.Success(nil)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
-}
-
-func detail(resp http.ResponseWriter,req *http.Request){
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	key := strconv.Itoa(id)
-	log.Println(idStr)
-	valStr,_ := ld.Get([]byte(key),nil)
-	log.Println(string(valStr))
-	s := Story{}
-	json.Unmarshal(valStr,&s)
-	ar := &common.ApiResponse{
-
-	}
-	ar.Success(s)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
-}
 
 
