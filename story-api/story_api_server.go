@@ -16,12 +16,6 @@ import (
 	"time"
 )
 
-type Story struct {
-	Id int64 `json:"id"`
-	Name string `json:"name"`
-	Image string `json:"image"`
-	Url string `json:"url"`
-}
 
 var(
 	ld *leveldb.DB
@@ -140,23 +134,4 @@ func detail(resp http.ResponseWriter,req *http.Request){
 	resp.Write(data)
 }
 
-func getStoryList(path string)[]Story{
-	f,_ := os.Open(path)
-	reader := bufio.NewReader(f)
-	storyList := []Story{}
-	for{
-		line,_,err := reader.ReadLine()
-		if err==io.EOF {
-			break
-		}
-		linStr := string(line)
-		lis := strings.Split(linStr,",")
-		s := Story{}
-		s.Id,_ = strconv.ParseInt(lis[0],10,0)
-		s.Name = lis[1]
-		s.Image = lis[2]
-		s.Url = lis[3]
-		storyList = append(storyList,s)
-	}
-	return storyList
-}
+
