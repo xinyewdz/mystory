@@ -25,7 +25,7 @@ func (web *StoryWeb)Upload(resp http.ResponseWriter,req *http.Request){
 	fileName := fh.Filename
 	name := req.Form.Get("name")
 	fileType := fileName[strings.LastIndex(fileName,".")+1:]
-	uploadPath := "/mystory/"+name+"."+fileType
+	uploadPath := "mystory/"+name+"."+fileType
 	fUrl := util.UpyunUpload(file,uploadPath)
 	ar := &common.ApiResponse{
 		Data:"",

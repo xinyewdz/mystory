@@ -439,3 +439,31 @@
 13:59:18.600502 version@stat F·[3 2] S·1KiB[709B 441B] Sc·[0.75 0.00]
 13:59:18.639597 db@janitor F·7 G·0
 13:59:18.639597 db@open done T·43.0668ms
+=============== May 21, 2020 (CST) ===============
+16:59:17.347258 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:59:17.347258 CURRENT: missing target file: MANIFEST-000109
+16:59:17.348259 CURRENT.bak: missing target file: MANIFEST-000107
+=============== May 21, 2020 (CST) ===============
+17:00:33.004569 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:00:33.005568 CURRENT: missing target file: MANIFEST-000109
+17:00:33.005568 CURRENT.bak: missing target file: MANIFEST-000107
+=============== May 21, 2020 (CST) ===============
+17:10:27.251617 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:10:27.253610 CURRENT: missing target file: MANIFEST-000109
+17:10:27.253610 CURRENT.bak: missing target file: MANIFEST-000107
+=============== May 21, 2020 (CST) ===============
+17:14:20.005911 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:14:20.006913 CURRENT: missing target file: MANIFEST-000109
+17:14:20.007913 CURRENT.bak: missing target file: MANIFEST-000107
+=============== May 21, 2020 (CST) ===============
+17:19:06.340155 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:19:06.341155 CURRENT: missing target file: MANIFEST-000109
+17:19:06.341155 CURRENT.bak: missing target file: MANIFEST-000107
+=============== May 21, 2020 (CST) ===============
+17:20:22.651599 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:20:22.652600 CURRENT: missing target file: MANIFEST-000109
+17:20:22.652600 CURRENT.bak: missing target file: MANIFEST-000107
+=============== May 21, 2020 (CST) ===============
+17:21:48.454079 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:21:48.455080 CURRENT: missing target file: MANIFEST-000109
+17:21:48.455080 CURRENT.bak: missing target file: MANIFEST-000107

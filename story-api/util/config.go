@@ -18,6 +18,9 @@ func init(){
 			break
 		}
 		linStr := string(line)
+		if strings.Trim(linStr,"")==""{
+			continue
+		}
 		datas := strings.Split(linStr,"=")
 		confMap[datas[0]] = datas[1]
 	}
