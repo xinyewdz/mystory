@@ -1,14 +1,25 @@
 package leveldb
 
-import "github.com/syndtr/goleveldb/leveldb"
+import (
+	"github.com/syndtr/goleveldb/leveldb"
+	"go.uber.org/zap"
+	"story-api/global"
+)
 
 var(
 	dbMap = make(map[interface{}]*leveldb.DB)
+	log = global.MainLog
 )
 
 func init(){
-	userDb,_:= leveldb.OpenFile("db/user.db",nil)
-	storyDb,_ := leveldb.OpenFile("db/story.db",nil)
+	userDb,err:= leveldb.OpenFile("db/user.db",nil)
+	if err!=nil{
+		log.Error("open userdb error",zap.Error(err))
+	}
+	storyDb,err:= leveldb.OpenFile("db/story.db",nil)
+	if err!=nil{
+		log.Error("open storydb error",zap.Error(err))
+	}
 	dbMap[&StoryDao{}]=storyDb
 	dbMap[&UserDao{}]=userDb
 }

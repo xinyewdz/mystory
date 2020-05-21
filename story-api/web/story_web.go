@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
@@ -41,8 +42,13 @@ func (web *StoryWeb)Upload(resp http.ResponseWriter,req *http.Request){
 
 func (web *StoryWeb)Save(resp http.ResponseWriter,req *http.Request){
 	data,_ := ioutil.ReadAll(req.Body)
+	mainLog.Info("story",zap.String("req",string(data)))
 	storyObj := &entity.DBStory{}
-	json.Unmarshal(data,storyObj)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data,&reqMap)
+	storyObj.Name = reqMap["name"]
+	storyObj.AudioUrl = reqMap["audio"]
+	storyObj.ImageUrl = reqMap["image"]
 	storyDao.Insert(storyObj)
 	ar := &common.ApiResponse{
 		Data:0,
@@ -80,7 +86,12 @@ func (web *StoryWeb)Detail(resp http.ResponseWriter,req *http.Request){
 	id,_ := strconv.Atoi(idStr)
 	sObj := storyDao.Detail(int64(id))
 	ar := &common.ApiResponse{}
-	ar.Success(sObj)
+	result := make(map[string]string)
+	result["name"] = sObj.Name
+	result["url"] = sObj.AudioUrl
+	result["image"] = sObj.ImageUrl
+	result["id"] = strconv.Itoa(int(sObj.Id))
+	ar.Success(result)
 	data,_ := json.Marshal(ar)
 	resp.Write(data)
 }

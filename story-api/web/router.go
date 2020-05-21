@@ -2,7 +2,7 @@ package web
 
 import (
 	"encoding/json"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 	"story-api/common"
 )
@@ -11,7 +11,7 @@ type RouterHttpHandler func(http.ResponseWriter, *http.Request)
 
 func (router RouterHttpHandler)ServeHTTP(resp http.ResponseWriter,req *http.Request){
 	path := req.URL.Path
-	log.Printf("request %s\n",path)
+	mainLog.Info("request ",zap.String("path",path))
 	defer func(){
 		resp.Header().Set("Content-Type","application/json;charset=utf-8")
 		if err :=recover();err!=nil {
@@ -20,6 +20,7 @@ func (router RouterHttpHandler)ServeHTTP(resp http.ResponseWriter,req *http.Requ
 				Code:"500",
 				Msg: "server error",
 			}
+			mainLog.Error("request error",zap.String("path",path),zap.Any("error",err))
 			respData,_ :=json.Marshal(ap)
 			resp.Write(respData)
 		}

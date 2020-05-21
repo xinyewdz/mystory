@@ -18,19 +18,15 @@ Page({
     var that = this;
     let name = this.data.name;
     console.log("savestory,"+name);
-    that.upload(that.data.audioPath,name,function(path){
-      var audioPath = path;
-      console.log("audio upload success");
-      that.upload(that.data.image,name,function(path){
-        console.log("image upload success");
-        var imagePath = path;
+    that.upload(that.data.audioPath,name,function(aPath){
+      that.upload(that.data.image,name,function(iPath){
         wx.request({
           url: app.host+"/save",
           method:"POST",
           data:{
             name:name,
-            audio:audioPath,
-            image:imagePath
+            audio:aPath,
+            image:iPath
           },
           success:function(resp){
             wx.hideLoading();

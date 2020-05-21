@@ -36,5 +36,5 @@ func UpyunUpload(read io.ReadCloser,path string)string{
 	}
 	respBody,_ := ioutil.ReadAll(resp.Body)
 	mainLog.Info("upyun upload",zap.String("resp",string(respBody)))
-	return downloadHost+path
+	return downloadHost+"/"+path
 }

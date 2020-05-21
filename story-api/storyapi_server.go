@@ -43,10 +43,10 @@ func registStory(routeMap map[string]web.RouterHttpHandler){
 
 func registUser(routeMap map[string]web.RouterHttpHandler){
 	routeMap["/adminName"] = userWeb.AdminName
-	routeMap["/detail"] = userWeb.Detail
-	routeMap["/list"] = userWeb.List
-	routeMap["/save"] = userWeb.Save
-	routeMap["/remove"] = userWeb.Remove
+	routeMap["/user/detail"] = userWeb.Detail
+	routeMap["/user/list"] = userWeb.List
+	routeMap["/user/save"] = userWeb.Save
+	routeMap["/user/remove"] = userWeb.Remove
 }
 
 

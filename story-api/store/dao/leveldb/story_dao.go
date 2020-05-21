@@ -13,13 +13,14 @@ type StoryDao struct {
 
 func (dao *StoryDao) Insert(obj *entity.DBStory){
 	id := time.Now().Unix()
+	obj.CreateTime = time.Now()
 	obj.Id = id
 	idStr := strconv.Itoa(int(obj.Id))
 	sj,_ := json.Marshal(obj)
 	getDb(dao).Put([]byte(idStr),sj,nil)
 }
 
-func (dao *StoryDao) UserUpdate(obj *entity.DBStory){
+func (dao *StoryDao) Update(obj *entity.DBStory){
 	idStr := strconv.Itoa(int(obj.Id))
 	sJson,_ := json.Marshal(obj)
 	getDb(dao).Put([]byte(idStr),sJson,nil)

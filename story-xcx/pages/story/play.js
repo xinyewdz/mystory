@@ -3,7 +3,11 @@ const app = getApp()
 
 Page({
   data: {
-    story: {}
+    story: {
+      name:"",
+      url:"",
+      image:""
+    }
   },
   onLoad: function (option) {
       var id = option.id;
@@ -23,8 +27,8 @@ Page({
       url: app.host+'/story?id='+id,
       success:function(resp){
         var respData = resp.data;
-        console.log(JSON.stringify(respData));
-        if(respData.code=="200"){
+        console.log(resp.data);
+        if(respData.code==200){
           callback(respData.data)
         }
       }
