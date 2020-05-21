@@ -30,7 +30,11 @@ func (web *StoryWeb)Upload(resp http.ResponseWriter,req *http.Request){
 	ar := &common.ApiResponse{
 		Data:"",
 	}
-	ar.Success(fUrl)
+	if fUrl==""{
+		ar.Error("500","error")
+	}else{
+		ar.Success(fUrl)
+	}
 	data,_ := json.Marshal(ar)
 	resp.Write(data)
 }

@@ -34,7 +34,7 @@ func regist(mux *http.ServeMux){
 
 func registStory(routeMap map[string]web.RouterHttpHandler){
 	routeMap["/list"] = storyWeb.List
-	routeMap["/detail"] = storyWeb.Detail
+	routeMap["/story"] = storyWeb.Detail
 	routeMap["/upload"] = storyWeb.Upload
 	routeMap["/save"] = storyWeb.Save
 	routeMap["/remove"] = storyWeb.Remove

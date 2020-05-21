@@ -77,9 +77,6 @@ Page({
       "name":name
     })
   },
-  testEvent:function(){
-    console.log("testevent")
-  },
   chooseAudio:function(){
     var that = this;
     console.log("chooseAudio event")
