@@ -5,8 +5,8 @@ Page({
     user:{},
     isLogin:false
   },
-  onLoad: function (options) {
-
+  onShow: function (options) {
+    
   },
   getUserInfo(e){
     var userInfo = JSON.parse(e.detail.rawData);

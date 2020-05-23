@@ -1,7 +1,15 @@
 //app.js
 App({
-  //"host":"https://api.story.wenqiuqiu.com"
-  "host":"http://localhost:8060",
+  host:"https://api.story.wenqiuqiu.com",
+  //host:"http://localhost:8060",
+  onHide:function(){
+    wx.removeStorage({
+      key: 'user',
+    });
+    wx.removeStorage({
+      key: 'token',
+    })
+  },
   setUser:function(user){
     wx.setStorage({
       data: user,
@@ -20,6 +28,11 @@ App({
       data: token,
       key: 'token',
     })
+  },
+  auth:function(){
+    var token = this.getToken();
+    console.log(token)
+    return token!=""
   },
   postData:function(url,data,callback){
     var that = this;

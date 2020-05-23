@@ -47,6 +47,7 @@ func registUser(routeMap map[string]web.RouterHttpHandler){
 	routeMap["/user/save"] = userWeb.Save
 	routeMap["/user/remove"] = userWeb.Remove
 	routeMap["/login"] = userWeb.Login
+	routeMap["/user/admin"] = userWeb.UpdateAdmin
 }
 
 

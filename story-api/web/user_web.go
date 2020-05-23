@@ -54,7 +54,7 @@ func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *h
 	return apiResp
 }
 
-func (web *UserWeb)updateAdmin(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+func (web *UserWeb)UpdateAdmin(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	reqBody := make(map[string]string)
 	resolveBody(req,&reqBody)
 	userIdStr := reqBody["userId"]
