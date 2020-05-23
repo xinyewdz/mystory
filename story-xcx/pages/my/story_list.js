@@ -7,6 +7,13 @@ Page({
   },
 
   onLoad: function (options) {
+    var token = app.getToken();
+    if(!token){
+      wx.switchTab({
+        url: '../my/my',
+      })
+      return;
+    }
     var that = this;
     this.storyList(function(storyList){
       that.setData(
@@ -20,29 +27,20 @@ Page({
       var id = event.currentTarget.id;
       console.log("remove "+id);
       var that = this;
-      wx.request({
-        url: app.host+'/remove?id='+id,
-        success:function(resp){
-          that.storyList(function(storyList){
-            that.setData(
-              {
-                "storyList":storyList
-              }
-            )
-          });
-        }
+      app.postData("/remove?id="+id,{},function(){
+        that.storyList(function(storyList){
+          that.setData(
+            {
+              "storyList":storyList
+            }
+          )
+        });
       })
     
   },
   storyList:function(callback){
-    wx.request({
-      url: app.host+'/list',
-      success:function(resp){
-        var respData = resp.data;
-        if(respData.code=="200"){
-          callback(respData.data)
-        }
-      }
-    })
+    app.postData("/list",{},function(respData){
+      callback(respData);
+    });
   }
 })

@@ -9,7 +9,13 @@ Page({
     "audioName":""
   },
   onLoad: function (options) {
-
+    var token = app.getToken();
+    if(!token){
+      wx.switchTab({
+        url: '../my/my',
+      })
+      return;
+    }
   },
   saveStory:function(){
     wx.showLoading({
@@ -20,29 +26,21 @@ Page({
     console.log("savestory,"+name);
     that.upload(that.data.audioPath,name,function(aPath){
       that.upload(that.data.image,name,function(iPath){
-        wx.request({
-          url: app.host+"/save",
-          method:"POST",
-          data:{
-            name:name,
-            audio:aPath,
-            image:iPath
-          },
-          success:function(resp){
-            wx.hideLoading();
-            const respData = resp.data;
-            if(respData.code=="200"){
-              wx.switchTab({
-                url: '../index/index',
-                success:function(){
-                  var page = getCurrentPages().pop()
-                  if(page==undefined||page==null) return;
-                  page.onLoad();
-                }
-              })
+        var data = {
+          name:name,
+          audio:aPath,
+          image:iPath
+        };
+        app.postData("/save",data,function(){
+          wx.switchTab({
+            url: '../index/index',
+            success:function(){
+              var page = getCurrentPages().pop()
+              if(page==undefined||page==null) return;
+              page.onLoad();
             }
-          }
-        })
+          })
+        });
       });
     });
     

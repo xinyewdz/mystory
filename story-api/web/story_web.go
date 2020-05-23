@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"go.uber.org/zap"
 	"io/ioutil"
@@ -20,7 +21,7 @@ var(
 type StoryWeb struct {
 }
 
-func (web *StoryWeb)Upload(resp http.ResponseWriter,req *http.Request){
+func (web *StoryWeb)Upload(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseMultipartForm(1024*1024*100)
 	file,fh,_ := req.FormFile("file")
 	fileName := fh.Filename
@@ -36,13 +37,12 @@ func (web *StoryWeb)Upload(resp http.ResponseWriter,req *http.Request){
 	}else{
 		ar.Success(fUrl)
 	}
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }
 
-func (web *StoryWeb)Save(resp http.ResponseWriter,req *http.Request){
+func (web *StoryWeb)Save(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	data,_ := ioutil.ReadAll(req.Body)
-	mainLog.Info("story",zap.String("req",string(data)))
+	mainLog.Info("story",zap.String("model",string(data)))
 	storyObj := &entity.DBStory{}
 	reqMap := make(map[string]string)
 	json.Unmarshal(data,&reqMap)
@@ -54,21 +54,19 @@ func (web *StoryWeb)Save(resp http.ResponseWriter,req *http.Request){
 		Data:0,
 	}
 	ar.Success(storyObj.Id)
-	respData,_ := json.Marshal(ar)
-	resp.Write(respData)
+	return ar
 }
 
 
 
-func (web *StoryWeb)List(resp http.ResponseWriter,req *http.Request){
+func (web *StoryWeb)List(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	ar := &common.ApiResponse{}
 	sl := storyDao.List()
 	ar.Success(sl)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }
 
-func (web *StoryWeb)Remove(resp http.ResponseWriter,req *http.Request){
+func (web *StoryWeb)Remove(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
 	idStr := req.Form.Get("id")
 	id,_ := strconv.Atoi(idStr)
@@ -76,11 +74,10 @@ func (web *StoryWeb)Remove(resp http.ResponseWriter,req *http.Request){
 	ar := &common.ApiResponse{
 	}
 	ar.Success(nil)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }
 
-func (web *StoryWeb)Detail(resp http.ResponseWriter,req *http.Request){
+func (web *StoryWeb)Detail(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
 	idStr := req.Form.Get("id")
 	id,_ := strconv.Atoi(idStr)
@@ -92,6 +89,5 @@ func (web *StoryWeb)Detail(resp http.ResponseWriter,req *http.Request){
 	result["image"] = sObj.ImageUrl
 	result["id"] = strconv.Itoa(int(sObj.Id))
 	ar.Success(result)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }

@@ -5,8 +5,8 @@
   <view class="page__bd">
     <view class="weui-flex">
       <view class="weui-flex__item">
-        <view wx:if="{{login}}">{{user.nickName}}</view>
-        <block wx:if="{{!login}}">
+        <view wx:if="{{isLogin}}">{{user.name}}</view>
+        <block wx:if="{{!isLogin}}">
           <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">登录</button>
         </block>
       </view>
@@ -14,7 +14,7 @@
   </view>
   <view class="page__bd">
     <view class="weui-cells">
-      <view class="weui-cell"  wx:if="{{isAdmin}}">
+      <view class="weui-cell"  wx:if="{{user.type=='admin'}}">
         <navigator url="/pages/my/story_list">
           <view class="weui-cell__hd">故事列表</view>
         </navigator>

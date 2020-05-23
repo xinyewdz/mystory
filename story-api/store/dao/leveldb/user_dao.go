@@ -2,12 +2,19 @@ package leveldb
 
 import (
 	"encoding/json"
+	"github.com/syndtr/goleveldb/leveldb"
 	"story-api/store/entity"
 	"strconv"
 	"time"
 )
 
+var userDb *leveldb.DB
+
 type UserDao struct {
+}
+
+func init(){
+	userDb = getDb(User)
 }
 
 
@@ -16,18 +23,18 @@ func (dao *UserDao) Insert(obj *entity.DBUser){
 	obj.Id = id
 	idStr := strconv.Itoa(int(obj.Id))
 	sj,_ := json.Marshal(obj)
-	getDb(dao).Put([]byte(idStr),sj,nil)
+	userDb.Put([]byte(idStr),sj,nil)
 }
 
 func (dao *UserDao) Update(obj *entity.DBUser){
 	idStr := strconv.Itoa(int(obj.Id))
 	sJson,_ := json.Marshal(obj)
-	getDb(dao).Put([]byte(idStr),sJson,nil)
+	userDb.Put([]byte(idStr),sJson,nil)
 }
 
 func (dao *UserDao) List()[]*entity.DBUser{
 	sl := []*entity.DBUser{}
-	iterator := getDb(dao).NewIterator(nil,nil)
+	iterator := userDb.NewIterator(nil,nil)
 	for iterator.Next(){
 		data := iterator.Value()
 		obj := &entity.DBUser{}
@@ -37,15 +44,30 @@ func (dao *UserDao) List()[]*entity.DBUser{
 	return sl
 }
 
-func (dao *UserDao) Detail(id int64)*entity.DBUser{
+func (dao *UserDao) Get(id int64)*entity.DBUser{
 	key := strconv.Itoa(int(id))
-	valStr,_  := getDb(dao).Get([]byte(key),nil)
+	valStr,_  := userDb.Get([]byte(key),nil)
 	s := &entity.DBUser{}
 	json.Unmarshal(valStr,s)
 	return s
 }
 
+func (dao *UserDao) GetByOpenId(openId string)*entity.DBUser{
+	iterator := userDb.NewIterator(nil,nil)
+	var user *entity.DBUser
+	for iterator.Next(){
+		data := iterator.Value()
+		obj := &entity.DBUser{}
+		json.Unmarshal(data,obj)
+		if obj.Openid==openId{
+			user = obj
+			break
+		}
+	}
+	return user
+}
+
 func (dao *UserDao) Remove(id int64){
 	key := strconv.Itoa(int(id))
-	getDb(dao).Delete([]byte(key),nil)
+	userDb.Delete([]byte(key),nil)
 }

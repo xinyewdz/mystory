@@ -24,6 +24,4 @@ func init(){
 		datas := strings.Split(linStr,"=")
 		confMap[datas[0]] = datas[1]
 	}
-
 }
-

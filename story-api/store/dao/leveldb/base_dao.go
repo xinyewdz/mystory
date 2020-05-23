@@ -7,8 +7,15 @@ import (
 )
 
 var(
-	dbMap = make(map[interface{}]*leveldb.DB)
+	dbMap = make(map[daoType]*leveldb.DB)
 	log = global.MainLog
+)
+
+type daoType uint
+
+const(
+	User daoType = iota
+	Story
 )
 
 func init(){
@@ -20,11 +27,11 @@ func init(){
 	if err!=nil{
 		log.Error("open storydb error",zap.Error(err))
 	}
-	dbMap[&StoryDao{}]=storyDb
-	dbMap[&UserDao{}]=userDb
+	dbMap[Story]=storyDb
+	dbMap[User]=userDb
 }
 
-func getDb(dao interface{})*leveldb.DB{
+func getDb(dao daoType)*leveldb.DB{
 	return dbMap[dao]
 }
 

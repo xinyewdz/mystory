@@ -1,13 +1,17 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
 	"story-api/store/dao/leveldb"
 	"story-api/store/entity"
+	"story-api/util"
+	"story-api/web/model"
 	"strconv"
+	"time"
 )
 
 var(
@@ -17,11 +21,54 @@ var(
 type UserWeb struct {
 }
 
-func (web *UserWeb)login(resp http.ResponseWriter,req *http.Request){
+func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+	reqBody := make(map[string]string)
+	resolveBody(req,&reqBody)
+	code := reqBody["code"]
+	sResp := util.Code2Session(code)
+	apiResp := &common.ApiResponse{}
+	if sResp==nil{
+		apiResp.Error("501","getSession error")
+		return apiResp
+	}
+	user := userDao.GetByOpenId(sResp.OpenId)
+	if user==nil{
+		user = &entity.DBUser{}
+		user.Openid = sResp.OpenId
+	}
+	user.Name = reqBody["nickName"]
+	user.Gender = reqBody["gender"]
+	user.Phone = reqBody["phone"]
 
+	if user.Id==0{
+		userDao.Insert(user)
+	}else{
+		userDao.Update(user)
+	}
+	accountRes := &model.AccountResp{}
+	util.CopyProperties(user,accountRes)
+	token := strconv.Itoa(time.Now().Nanosecond())
+	tokenMap[token]=user
+	accountRes.Token = token
+	apiResp.Success(accountRes)
+	return apiResp
 }
 
-func (web *UserWeb)Save(resp http.ResponseWriter,req *http.Request){
+func (web *UserWeb)updateAdmin(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+	reqBody := make(map[string]string)
+	resolveBody(req,&reqBody)
+	userIdStr := reqBody["userId"]
+	userType := reqBody["type"];
+	userId,_ := strconv.Atoi(userIdStr)
+	user := userDao.Get(int64(userId))
+	if user!=nil{
+		user.Type=userType
+		userDao.Update(user)
+	}
+	return new(common.ApiResponse).Success(nil)
+}
+
+func (web *UserWeb)Save(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	data,_ := ioutil.ReadAll(req.Body)
 	storyObj := &entity.DBUser{}
 	json.Unmarshal(data,storyObj)
@@ -30,21 +77,19 @@ func (web *UserWeb)Save(resp http.ResponseWriter,req *http.Request){
 		Data:0,
 	}
 	ar.Success(storyObj.Id)
-	respData,_ := json.Marshal(ar)
-	resp.Write(respData)
+	return ar
 }
 
 
 
-func (web *UserWeb)List(resp http.ResponseWriter,req *http.Request){
+func (web *UserWeb)List(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	ar := &common.ApiResponse{}
 	sl := userDao.List()
 	ar.Success(sl)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }
 
-func (web *UserWeb)Remove(resp http.ResponseWriter,req *http.Request){
+func (web *UserWeb)Remove(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
 	idStr := req.Form.Get("id")
 	id,_ := strconv.Atoi(idStr)
@@ -52,25 +97,16 @@ func (web *UserWeb)Remove(resp http.ResponseWriter,req *http.Request){
 	ar := &common.ApiResponse{
 	}
 	ar.Success(nil)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }
 
-func (web *UserWeb)Detail(resp http.ResponseWriter,req *http.Request){
+func (web *UserWeb)Detail(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
 	idStr := req.Form.Get("id")
 	id,_ := strconv.Atoi(idStr)
-	sObj := userDao.Detail(int64(id))
+	sObj := userDao.Get(int64(id))
 	ar := &common.ApiResponse{}
 	ar.Success(sObj)
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
+	return ar
 }
 
-func  (web *UserWeb)AdminName(resp http.ResponseWriter,req *http.Request){
-	ar := &common.ApiResponse{
-	}
-	ar.Success("aaron");
-	data,_ := json.Marshal(ar)
-	resp.Write(data)
-}

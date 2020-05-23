@@ -1,40 +1,40 @@
 // pages/my/my.js
-const app = getApp()
+const app = getApp();
 Page({
   data: {
-    isAdmin:true,
-    login:false,
-    adminName:"aaron",
-    user:{}
+    user:{},
+    isLogin:false
   },
   onLoad: function (options) {
-    //this.getAdminName();
-  },
-  getAdminName:function(){
-    var that = this;
-    wx.request({
-      url: app.host+"/adminName",
-      success:function(resp){
-        var name = resp.data;
-        that.setData(
-          {
-            adminName:name
-          }
-        )
-      }
-    })
+
   },
   getUserInfo(e){
     var userInfo = JSON.parse(e.detail.rawData);
     console.log(userInfo);
     var that = this;
-    this.setData({
-      user:userInfo,
-      isAdmin: that.data.adminName==userInfo.nickName,
-      login:true
+    wx.login({
+      success:function(res){
+        if(res.code){
+          var data = {
+            code:res.code,
+            nickName:userInfo.nickName,
+            gender:userInfo.gender
+          };
+          app.postData("/login",data,function(respData){
+            that.setData({
+              isLogin:true,
+              user:respData
+            });
+            app.setUser(respData);
+          });
+        }else{
+          console.log("login fail!"+res.errMsg);
+          wx.showToast({
+            title:"登录失败:"+res.errMsg,
+            icon:"none"
+          });
+        }
+      }
     });
-    
   }
-
-
 })
