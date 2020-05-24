@@ -4,7 +4,7 @@ App({
   adm:null,
   //host:"http://localhost:8060",
   onLaunch:function(){
-    adm = wx.getBackgroundAudioManager();
+   this.adm = wx.getBackgroundAudioManager();
   },
   onHide:function(){
     
