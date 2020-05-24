@@ -1,11 +1,14 @@
 //index.js
 //获取应用实例
 const app = getApp()
-const adm = wx.getBackgroundAudioManager();
+const adm = app.adm;
 Page({
   data: {
     storyList: [],
     idx:0
+  },
+  onReady:function(){
+    adm.onEnded(this.next);
   },
   
   onShow: function () {
@@ -30,24 +33,31 @@ Page({
   },
   next:function(){
     var idx = this.data.idx;
-    var story = this.data.storyList[idx];
+    var storyList = this.data.storyList;
     idx++;
-    if(idx>story.length){
+    if(idx>=storyList.length){
       idx = 0;
     }
-    
+    var story = storyList[idx];
+    this.playStory(story,idx)
+
   },
   play:function(event){
     var id = event.currentTarget.id;
     var idx = event.currentTarget.dataset.idx;
     var story = this.data.storyList[idx];
+    this.playStory(story,idx)
+  },
+  playStory:function(story,idx){
     this.setData({
-      idx:idx
+      idx :idx
     })
     adm["src"] = story.audioUrl
     adm["title"] = story.name
     adm["coverImgUrl"]= story.imageUrl
+    var that = this;
     adm.play()
+   
   },
   //事件处理函数
   goStory: function(event) {

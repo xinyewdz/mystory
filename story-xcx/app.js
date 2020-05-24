@@ -1,14 +1,13 @@
 //app.js
 App({
   host:"https://api.story.wenqiuqiu.com",
+  adm:null,
   //host:"http://localhost:8060",
+  onLaunch:function(){
+    adm = wx.getBackgroundAudioManager();
+  },
   onHide:function(){
-    wx.removeStorage({
-      key: 'user',
-    });
-    wx.removeStorage({
-      key: 'token',
-    })
+    
   },
   setUser:function(user){
     wx.setStorage({

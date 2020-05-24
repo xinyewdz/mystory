@@ -8,6 +8,18 @@ Page({
   onShow: function (options) {
     
   },
+  logout:function(){
+    this.setData({
+      user:{},
+      isLogin:false
+    });
+    wx.removeStorage({
+      key: 'user',
+    });
+    wx.removeStorage({
+      key: 'token',
+    })
+  },
   getUserInfo(e){
     var userInfo = JSON.parse(e.detail.rawData);
     console.log(userInfo);

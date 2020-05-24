@@ -24,6 +24,9 @@
           <view class="weui-cell__hd">关于</view>
         </navigator>
       </view>
+      <view class="weui-cell" wx:if="{{isLogin}}">
+          <view class="weui-cell__hd" bindtap="logout">登出</view>
+      </view>
     </view>
   </view>
 </view>
