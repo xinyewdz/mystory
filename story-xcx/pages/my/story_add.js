@@ -46,18 +46,28 @@ Page({
     
   },
   upload:function(path,name,callback){
+    var token = app.getToken();
     wx.uploadFile({
       filePath: path,
       name: "file",
       url: app.host+"/upload",
+      header:{
+        "token":token
+      },
       formData:{
         "name":name
       },
       success:function(res,code){
         let resData = JSON.parse(res.data);
-        let fp = resData.data;
-        console.log("upload success.fp="+fp);
-        callback(fp);
+        console.log(resData)
+        if(resData.code=="200"){
+          callback(resData.data);
+        }else{
+          wx.showToast({
+            title: resData.msg
+          })
+        }
+        console.log("upload finish.code="+resData.code);
       },
       fail:function(){
         console.log("upload fail.path="+path);

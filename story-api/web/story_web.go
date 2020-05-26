@@ -42,7 +42,7 @@ func (web *StoryWeb)Upload(context context.Context,resp http.ResponseWriter,req 
 
 func (web *StoryWeb)Save(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	data,_ := ioutil.ReadAll(req.Body)
-	mainLog.Info("story",zap.String("model",string(data)))
+	mainLog.Info("savestory",zap.String("model",string(data)))
 	storyObj := &entity.DBStory{}
 	reqMap := make(map[string]string)
 	json.Unmarshal(data,&reqMap)
