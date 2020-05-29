@@ -22,8 +22,9 @@ type RouterHttpHandler func(context.Context,http.ResponseWriter, *http.Request)*
 func (router RouterHttpHandler)ServeHTTP(resp http.ResponseWriter,req *http.Request){
 	path := req.URL.Path
 	mainLog.Info("request ",zap.String("path",path))
+	resp.Header().Set("Content-Type","application/json;charset=UTF-8")
+	resp.WriteHeader(200)
 	defer func(){
-		resp.Header().Set("Content-Type","application/json;charset=utf-8")
 		if err :=recover();err!=nil {
 			//path := model.URL.Path
 			ap := &common.ApiResponse{

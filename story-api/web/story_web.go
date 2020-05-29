@@ -7,15 +7,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/leveldb"
+	"story-api/store/dao/mongo"
 	"story-api/store/entity"
 	"story-api/util"
-	"strconv"
 	"strings"
 )
 
 var(
-	storyDao = new(leveldb.StoryDao)
+	storyDao = mongo.NewStoryDao()
 )
 
 type StoryWeb struct {
@@ -68,9 +67,10 @@ func (web *StoryWeb)List(context context.Context,resp http.ResponseWriter,req *h
 
 func (web *StoryWeb)Remove(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	storyDao.Remove(int64(id))
+	data,_ := ioutil.ReadAll(req.Body)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data,&reqMap)
+	storyDao.Remove(reqMap["id"])
 	ar := &common.ApiResponse{
 	}
 	ar.Success(nil)
@@ -78,16 +78,17 @@ func (web *StoryWeb)Remove(context context.Context,resp http.ResponseWriter,req 
 }
 
 func (web *StoryWeb)Detail(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	sObj := storyDao.Detail(int64(id))
+	data,_ := ioutil.ReadAll(req.Body)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data,&reqMap)
+	idStr := reqMap["id"]
+	sObj := storyDao.Detail(idStr)
 	ar := &common.ApiResponse{}
 	result := make(map[string]string)
 	result["name"] = sObj.Name
 	result["url"] = sObj.AudioUrl
 	result["image"] = sObj.ImageUrl
-	result["id"] = strconv.Itoa(int(sObj.Id))
+	result["id"] = sObj.Id
 	ar.Success(result)
 	return ar
 }

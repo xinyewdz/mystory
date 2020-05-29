@@ -1,8 +1,8 @@
 //app.js
 App({
-  //host:"https://api.story.wenqiuqiu.com",
+  host:"https://api.story.wenqiuqiu.com",
   adm:null,
-  host:"http://localhost:8060",
+  //host:"http://localhost:8060",
   onLaunch:function(){
    this.adm = wx.getBackgroundAudioManager();
   },

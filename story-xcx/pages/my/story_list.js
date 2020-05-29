@@ -27,7 +27,10 @@ Page({
       var id = event.currentTarget.id;
       console.log("remove "+id);
       var that = this;
-      app.postData("/remove?id="+id,{},function(){
+      var data = {
+        "id":id
+      }
+      app.postData("/remove",data,function(){
         that.storyList(function(storyList){
           that.setData(
             {

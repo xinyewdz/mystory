@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"story-api/util/config"
 )
 
 var(
@@ -16,9 +17,9 @@ var(
 )
 
 func init()  {
-	host = confMap["upyun.host"]
-	user = confMap["upyun.user"]
-	password = confMap["upyun.password"]
+	host = config.Get("upyun.host")
+	user = config.Get("upyun.user")
+	password = config.Get("upyun.password")
 }
 
 

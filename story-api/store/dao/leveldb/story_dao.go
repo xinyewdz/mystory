@@ -18,19 +18,22 @@ func init(){
 	storyDb = getDb(Story)
 }
 
+func NewStoryDao()*StoryDao{
+	dao := &StoryDao{}
+	return dao
+}
+
 func (dao *StoryDao) Insert(obj *entity.DBStory){
 	id := time.Now().Unix()
 	obj.CreateTime = time.Now()
-	obj.Id = id
-	idStr := strconv.Itoa(int(obj.Id))
+	obj.Id = strconv.Itoa(int(id))
 	sj,_ := json.Marshal(obj)
-	storyDb.Put([]byte(idStr),sj,nil)
+	storyDb.Put([]byte(obj.Id),sj,nil)
 }
 
 func (dao *StoryDao) Update(obj *entity.DBStory){
-	idStr := strconv.Itoa(int(obj.Id))
 	sJson,_ := json.Marshal(obj)
-	storyDb.Put([]byte(idStr),sJson,nil)
+	storyDb.Put([]byte(obj.Id),sJson,nil)
 }
 
 func (dao *StoryDao)  List()[]*entity.DBStory{
@@ -45,15 +48,13 @@ func (dao *StoryDao)  List()[]*entity.DBStory{
 	return sl
 }
 
-func (dao *StoryDao) Detail(id int64)*entity.DBStory{
-	key := strconv.Itoa(int(id))
-	valStr,_  := storyDb.Get([]byte(key),nil)
+func (dao *StoryDao) Detail(id string)*entity.DBStory{
+	valStr,_  := storyDb.Get([]byte(id),nil)
 	s := &entity.DBStory{}
 	json.Unmarshal(valStr,s)
 	return s
 }
 
-func (dao *StoryDao) Remove(id int64){
-	key := strconv.Itoa(int(id))
-	storyDb.Delete([]byte(key),nil)
+func (dao *StoryDao) Remove(id string){
+	storyDb.Delete([]byte(id),nil)
 }

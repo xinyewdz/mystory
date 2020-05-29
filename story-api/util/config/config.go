@@ -1,4 +1,4 @@
-package util
+package config
 
 import (
 	"bufio"
@@ -24,4 +24,8 @@ func init(){
 		datas := strings.Split(linStr,"=")
 		confMap[datas[0]] = datas[1]
 	}
+}
+
+func Get(key string)string{
+	return confMap[key]
 }
