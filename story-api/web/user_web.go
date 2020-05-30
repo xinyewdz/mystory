@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/leveldb"
+	"story-api/store/dao/mongo"
 	"story-api/store/entity"
 	"story-api/util"
 	"story-api/web/model"
@@ -15,13 +15,13 @@ import (
 )
 
 var(
-	userDao = new(leveldb.UserDao)
+	userDao = mongo.NewUserDao()
 )
 
 type UserWeb struct {
 }
 
-func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+func (web *UserWeb)Login(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	reqBody := make(map[string]string)
 	resolveBody(req,&reqBody)
 	code := reqBody["code"]
@@ -40,7 +40,7 @@ func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *h
 	user.Gender = reqBody["gender"]
 	user.Phone = reqBody["phone"]
 
-	if user.Id==0{
+	if user.Id==""{
 		userDao.Insert(user)
 	}else{
 		userDao.Update(user)
@@ -48,19 +48,21 @@ func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *h
 	accountRes := &model.AccountResp{}
 	util.CopyProperties(user,accountRes)
 	token := strconv.Itoa(time.Now().Nanosecond())
-	tokenMap[token]=user
+	key := TOKEN_KEY+token
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	valData,_ := json.Marshal(user)
+	redisClient.Set(ctx,key,valData,30*time.Second)
 	accountRes.Token = token
 	apiResp.Success(accountRes)
 	return apiResp
 }
 
-func (web *UserWeb)UpdateAdmin(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+func (web *UserWeb)UpdateAdmin(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	reqBody := make(map[string]string)
 	resolveBody(req,&reqBody)
 	userIdStr := reqBody["userId"]
 	userType := reqBody["type"];
-	userId,_ := strconv.Atoi(userIdStr)
-	user := userDao.Get(int64(userId))
+	user := userDao.Get(userIdStr)
 	if user!=nil{
 		user.Type=userType
 		userDao.Update(user)
@@ -92,8 +94,7 @@ func (web *UserWeb)List(context context.Context,resp http.ResponseWriter,req *ht
 func (web *UserWeb)Remove(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
 	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	userDao.Remove(int64(id))
+	userDao.Remove(idStr)
 	ar := &common.ApiResponse{
 	}
 	ar.Success(nil)
@@ -103,8 +104,7 @@ func (web *UserWeb)Remove(context context.Context,resp http.ResponseWriter,req *
 func (web *UserWeb)Detail(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
 	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	sObj := userDao.Get(int64(id))
+	sObj := userDao.Get(idStr)
 	ar := &common.ApiResponse{}
 	ar.Success(sObj)
 	return ar

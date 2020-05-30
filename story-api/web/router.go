@@ -3,18 +3,22 @@ package web
 import (
 	"context"
 	"encoding/json"
+	"github.com/go-redis/redis/v8"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
 	"story-api/store/entity"
+	"story-api/util/redisutil"
+	"time"
 )
 
 const USER_KEY = "user"
 
-var tokenMap = map[string]*entity.DBUser{}
+var redisClient *redis.Client
 
 func init(){
+	redisClient = redisutil.Client
 }
 
 type RouterHttpHandler func(context.Context,http.ResponseWriter, *http.Request)*common.ApiResponse
@@ -64,7 +68,15 @@ func auth(req *http.Request)*entity.DBUser{
 	if token=="wendzh"{
 		return new(entity.DBUser)
 	}
-	user := tokenMap[token]
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	key := TOKEN_KEY+token
+	userStr := redisClient.Get(ctx,key)
+	if userStr==nil{
+		return nil
+	}
+	redisClient.PExpire(ctx,key,30*time.Minute)
+	user := &entity.DBUser{}
+	json.Unmarshal([]byte(userStr.String()),user)
 	return user
 }
 

@@ -1,33 +1,34 @@
 package mongo
+
 import (
-	"github.com/syndtr/goleveldb/leveldb"
+	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/bsonx/bsoncore"
 	"go.uber.org/zap"
 	"story-api/global"
 	"story-api/util/config"
+	"time"
 )
 
 var(
 	log = global.MainLog
 	host string
 	database string
-)
-
-type daoType uint
-
-const(
-	User daoType = iota
-	Story
+	dClient *mongo.Database
 )
 
 func init(){
 	host = config.Get("mongo.host")
 	database = config.Get("mongo.database")
-}
-
-func getDb(dao daoType)*leveldb.DB{
-	return nil
+	url := "mongodb://"+host+"/"+database
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	client,err := mongo.Connect(ctx,options.Client().ApplyURI(url))
+	if err!=nil{
+		log.Error("connect mongo error.",zap.String("host",host),zap.Error(err))
+	}
+	dClient = client.Database(database)
 }
 
 func toDoc(v interface{})*bsoncore.Document{

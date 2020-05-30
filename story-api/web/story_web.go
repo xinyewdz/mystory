@@ -7,14 +7,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/mongo"
+	"story-api/store/dao/mysql"
 	"story-api/store/entity"
 	"story-api/util"
 	"strings"
 )
 
 var(
-	storyDao = mongo.NewStoryDao()
+	storyDao = mysql.NewStoryDao()
 )
 
 type StoryWeb struct {

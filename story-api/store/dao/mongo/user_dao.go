@@ -1,73 +1,97 @@
 package mongo
 
 import (
-	"encoding/json"
-	"github.com/syndtr/goleveldb/leveldb"
+	"context"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.uber.org/zap"
 	"story-api/store/entity"
-	"strconv"
 	"time"
 )
 
-var userDb *leveldb.DB
-
 type UserDao struct {
+	table string
 }
 
-func init(){
-	userDb = getDb(User)
+func NewUserDao()*UserDao{
+	userdao := &UserDao{
+		table: "user",
+	}
+	return userdao
 }
-
 
 func (dao *UserDao) Insert(obj *entity.DBUser){
-	id := time.Now().Unix()
-	obj.Id = id
-	idStr := strconv.Itoa(int(obj.Id))
-	sj,_ := json.Marshal(obj)
-	userDb.Put([]byte(idStr),sj,nil)
+	obj.CreateTime = time.Now()
+	obj.Id = primitive.NewObjectID().Hex()
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	doc := toDoc(obj)
+	dClient.Collection(dao.table).InsertOne(ctx,doc)
 }
 
 func (dao *UserDao) Update(obj *entity.DBUser){
-	idStr := strconv.Itoa(int(obj.Id))
-	sJson,_ := json.Marshal(obj)
-	userDb.Put([]byte(idStr),sJson,nil)
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	query := bson.M{
+		"_id":obj.Id,
+	}
+	_,err := dClient.Collection(dao.table).UpdateOne(ctx,query,obj)
+	if err!=nil{
+		panic(err)
+	}
 }
 
 func (dao *UserDao) List()[]*entity.DBUser{
 	sl := []*entity.DBUser{}
-	iterator := userDb.NewIterator(nil,nil)
-	for iterator.Next(){
-		data := iterator.Value()
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	query := bson.M{
+	}
+	cursor,err := dClient.Collection(dao.table).Find(ctx,query)
+	if err!=nil{
+		panic(err)
+		log.Error("user query error",zap.Error(err))
+	}
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx){
 		obj := &entity.DBUser{}
-		json.Unmarshal(data,obj)
+		cursor.Decode(obj)
 		sl = append(sl,obj)
 	}
 	return sl
 }
 
-func (dao *UserDao) Get(id int64)*entity.DBUser{
-	key := strconv.Itoa(int(id))
-	valStr,_  := userDb.Get([]byte(key),nil)
-	s := &entity.DBUser{}
-	json.Unmarshal(valStr,s)
-	return s
+func (dao *UserDao) Get(id string)*entity.DBUser{
+	query := bson.M{
+		"_id":id,
+	}
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	result := dClient.Collection(dao.table).FindOne(ctx,query)
+	if result.Err()!=nil{
+		panic(result.Err())
+		return nil
+	}
+	obj := &entity.DBUser{}
+	result.Decode(obj)
+	return obj
 }
 
 func (dao *UserDao) GetByOpenId(openId string)*entity.DBUser{
-	iterator := userDb.NewIterator(nil,nil)
-	var user *entity.DBUser
-	for iterator.Next(){
-		data := iterator.Value()
-		obj := &entity.DBUser{}
-		json.Unmarshal(data,obj)
-		if obj.Openid==openId{
-			user = obj
-			break
-		}
+	query := bson.M{
+		"openId":openId,
 	}
-	return user
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	result := dClient.Collection(dao.table).FindOne(ctx,query)
+	if result.Err()!=nil{
+		panic(result.Err())
+		return nil
+	}
+	obj := &entity.DBUser{}
+	result.Decode(obj)
+	return obj
 }
 
-func (dao *UserDao) Remove(id int64){
-	key := strconv.Itoa(int(id))
-	userDb.Delete([]byte(key),nil)
+func (dao *UserDao) Remove(id string){
+	query := bson.M{
+		"_id":id,
+	}
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	dClient.Collection(dao.table).DeleteOne(ctx,query)
 }
