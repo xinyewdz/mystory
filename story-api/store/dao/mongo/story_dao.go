@@ -37,7 +37,11 @@ func (dao *StoryDao) Update(obj *entity.DBStory){
 	query := bson.M{
 		"_id":obj.Id,
 	}
-	_,err := dClient.Collection(dao.table).UpdateOne(ctx,query,obj)
+	doc := toDoc(obj)
+	update := bson.M{
+		"$set":doc,
+	}
+	_,err := dClient.Collection(dao.table).UpdateOne(ctx,query,update)
 	if err!=nil{
 		panic(err)
 	}
