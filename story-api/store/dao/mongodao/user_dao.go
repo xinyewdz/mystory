@@ -1,10 +1,10 @@
-package mongo
+package mongodao
 
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.uber.org/zap"
+	"go.mongodb.org/mongo-driver/mongo"
 	"story-api/store/entity"
 	"time"
 )
@@ -29,7 +29,7 @@ func (dao *UserDao) Insert(obj *entity.DBUser){
 }
 
 func (dao *UserDao) Update(obj *entity.DBUser){
-	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+ 	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
 	query := bson.M{
 		"_id":obj.Id,
 	}
@@ -49,17 +49,20 @@ func (dao *UserDao) List()[]*entity.DBUser{
 	query := bson.M{
 	}
 	cursor,err := dClient.Collection(dao.table).Find(ctx,query)
-	if err!=nil{
-		panic(err)
-		log.Error("user query error",zap.Error(err))
-	}
 	defer cursor.Close(ctx)
-	for cursor.Next(ctx){
-		obj := &entity.DBUser{}
-		cursor.Decode(obj)
-		sl = append(sl,obj)
+	if err==nil{
+		for cursor.Next(ctx){
+			obj := &entity.DBUser{}
+			cursor.Decode(obj)
+			sl = append(sl,obj)
+		}
+		return sl
 	}
-	return sl
+	if err==mongo.ErrNoDocuments{
+		return nil
+	}else{
+		panic(err)
+	}
 }
 
 func (dao *UserDao) Get(id string)*entity.DBUser{
@@ -68,13 +71,37 @@ func (dao *UserDao) Get(id string)*entity.DBUser{
 	}
 	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
 	result := dClient.Collection(dao.table).FindOne(ctx,query)
-	if result.Err()!=nil{
-		panic(result.Err())
+	obj := &entity.DBUser{}
+	err := result.Decode(obj)
+	if err==nil{
+		return obj
+	}
+	if err==mongo.ErrNoDocuments{
 		return nil
 	}
+	if err==mongo.ErrNoDocuments{
+		return nil
+	}else{
+		panic(err)
+	}
+}
+
+func (dao *UserDao) GetByName(name string)*entity.DBUser{
+	query := bson.M{
+		"name":name,
+	}
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	result := dClient.Collection(dao.table).FindOne(ctx,query)
 	obj := &entity.DBUser{}
-	result.Decode(obj)
-	return obj
+	err := result.Decode(obj)
+	if err==nil{
+		return obj
+	}
+	if err==mongo.ErrNoDocuments{
+		return nil
+	}else{
+		panic(err)
+	}
 }
 
 func (dao *UserDao) GetByOpenId(openId string)*entity.DBUser{
@@ -83,13 +110,16 @@ func (dao *UserDao) GetByOpenId(openId string)*entity.DBUser{
 	}
 	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
 	result := dClient.Collection(dao.table).FindOne(ctx,query)
-	if result.Err()!=nil{
-		panic(result.Err())
-		return nil
-	}
 	obj := &entity.DBUser{}
-	result.Decode(obj)
-	return obj
+	err := result.Decode(obj)
+	if err==nil{
+		return obj
+	}
+	if err==mongo.ErrNoDocuments{
+		return nil
+	}else{
+		panic(err)
+	}
 }
 
 func (dao *UserDao) Remove(id string){

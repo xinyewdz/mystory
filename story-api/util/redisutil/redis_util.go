@@ -11,7 +11,9 @@ var(
 
 func init(){
 	addr := config.Get("redis.host")
+	password := config.Get("redis.password")
 	Client = redis.NewClient(&redis.Options{
 		Addr: addr,
+		Password:password,
 	})
 }

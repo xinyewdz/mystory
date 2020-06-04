@@ -66,17 +66,18 @@ func auth(req *http.Request)*entity.DBUser{
 		return nil
 	}
 	if token=="wendzh"{
-		return new(entity.DBUser)
+		user := userDao.GetByName("aaron");
+		return user
 	}
 	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
 	key := TOKEN_KEY+token
-	userStr := redisClient.Get(ctx,key)
-	if userStr==nil{
+	userRes := redisClient.Get(ctx,key)
+	if userRes==nil||userRes.Val()==""{
 		return nil
 	}
 	redisClient.PExpire(ctx,key,30*time.Minute)
 	user := &entity.DBUser{}
-	json.Unmarshal([]byte(userStr.String()),user)
+	json.Unmarshal([]byte(userRes.Val()),user)
 	return user
 }
 

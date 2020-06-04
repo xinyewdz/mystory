@@ -1,4 +1,4 @@
-package mysql
+package mysqldao
 
 import (
 	"database/sql"
@@ -17,16 +17,16 @@ var(
 )
 
 func init()  {
-	host := config.Get("mysql.host")
-	user := config.Get("mysql.user")
-	password := config.Get("mysql.password")
-	database :=config.Get("mysql.database")
+	host := config.Get("mysqldao.host")
+	user := config.Get("mysqldao.user")
+	password := config.Get("mysqldao.password")
+	database :=config.Get("mysqldao.database")
 	url := user+":"+password+"@("+host+")/"+database+"?charset=utf8&parseTime=True&loc=Local"
 	var err error
-	conn,err = sql.Open("mysql",url)
-	//conn,err = gorm.Open("mysql",url)
+	conn,err = sql.Open("mysqldao",url)
+	//conn,err = gorm.Open("mysqldao",url)
 	if err!=nil{
-		log.Error("get mysql conn error.",zap.String("url",url),zap.Error(err))
+		log.Error("get mysqldao conn error.",zap.String("url",url),zap.Error(err))
 	}
 }
 

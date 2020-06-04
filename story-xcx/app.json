@@ -5,12 +5,14 @@
     "pages/my/my",
     "pages/my/story_add",
     "pages/my/story_list",
-    "pages/my/about"
+    "pages/my/about",
+    "pages/user/user_list",
+    "pages/user/user_detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
+    "navigationBarTitleText": "球球故事汇",
     "navigationBarTextStyle": "black"
   },
   "style": "v2",
@@ -31,5 +33,7 @@
     ]
   },
   "usingComponents": {},
-  "requiredBackgroundModes":["audio"]
+  "requiredBackgroundModes": [
+    "audio"
+  ]
 }

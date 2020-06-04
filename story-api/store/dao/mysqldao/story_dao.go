@@ -1,4 +1,4 @@
-package mysql
+package mysqldao
 
 import (
 	"story-api/store/entity"

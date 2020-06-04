@@ -20,16 +20,15 @@ func init(){
 
 func (dao *UserDao) Insert(obj *entity.DBUser){
 	id := time.Now().Unix()
-	obj.Id = id
-	idStr := strconv.Itoa(int(obj.Id))
+	idStr := strconv.Itoa(int(id))
+	obj.Id = idStr
 	sj,_ := json.Marshal(obj)
 	userDb.Put([]byte(idStr),sj,nil)
 }
 
 func (dao *UserDao) Update(obj *entity.DBUser){
-	idStr := strconv.Itoa(int(obj.Id))
 	sJson,_ := json.Marshal(obj)
-	userDb.Put([]byte(idStr),sJson,nil)
+	userDb.Put([]byte(obj.Id),sJson,nil)
 }
 
 func (dao *UserDao) List()[]*entity.DBUser{

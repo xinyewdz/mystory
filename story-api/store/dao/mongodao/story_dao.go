@@ -1,10 +1,10 @@
-package mongo
+package mongodao
 
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.uber.org/zap"
+	"go.mongodb.org/mongo-driver/mongo"
 	"story-api/store/entity"
 	"time"
 )
@@ -53,16 +53,20 @@ func (dao *StoryDao)  List()[]*entity.DBStory{
 	query := bson.M{
 	}
 	cursor,err := dClient.Collection(dao.table).Find(ctx,query)
-	if err!=nil{
-		log.Error("story query error",zap.Error(err))
+	if err==nil{
+		defer cursor.Close(ctx)
+		for cursor.Next(ctx){
+			obj := &entity.DBStory{}
+			cursor.Decode(obj)
+			sl = append(sl,obj)
+		}
+		return sl
 	}
-	defer cursor.Close(ctx)
-	for cursor.Next(ctx){
-		obj := &entity.DBStory{}
-		cursor.Decode(obj)
-		sl = append(sl,obj)
+	if err==mongo.ErrNoDocuments{
+		return nil
+	}else{
+		panic(err)
 	}
-	return sl
 }
 
 func (dao *StoryDao) Detail(id string)*entity.DBStory{
@@ -71,8 +75,15 @@ func (dao *StoryDao) Detail(id string)*entity.DBStory{
 		"_id":id,
 	}
 	s := &entity.DBStory{}
-	dClient.Collection(dao.table).FindOne(ctx,query).Decode(s)
-	return s
+	err := dClient.Collection(dao.table).FindOne(ctx,query).Decode(s)
+	if err==nil{
+		return s
+	}
+	if err==mongo.ErrNoDocuments{
+		return nil
+	}else{
+		panic(err)
+	}
 }
 
 func (dao *StoryDao) Remove(id string){

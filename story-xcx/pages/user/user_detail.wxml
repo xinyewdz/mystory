@@ -1,0 +1,32 @@
+<view class="page weui-form">
+  <view class="weui-form_control-area">
+    <view class="weui-cells__group">
+      <view class="weui-cells">
+        <view class="weui-cell">
+          <view class="weui-cell__hd">名称:</view>
+          <input class="weui0input" placeholder="">{{user.name}}</input>
+        </view>
+         <view class="weui-cell">
+          <view class="weui-cell__hd">性别:</view>
+          <view class="weui-cell__bd">
+            <select class="weui-select" name="gender">
+              <option value="男">男</option>
+              <option value="女">女</option>
+            </select>
+          </view>
+        </view>
+         <view class="weui-cell">
+          <view class="weui-cell__hd">手机号:</view>
+          <input class="weui0input" placeholder="请输入手机号">{{user.phone}}</input>
+        </view>
+         <view class="weui-cell">
+          <view class="weui-cell__hd">账户类型:</view>
+          <select class="weui-select" name="type">
+              <option value="admin">管理员</option>
+              <option value="user">普通用户</option>
+            </select>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
