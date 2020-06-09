@@ -23,7 +23,12 @@ Page({
         })
     });
   },
-  userDetail:function(){
-    
+  userDetail:function(event){
+    let id = event.currentTarget.id;
+    console.log("user "+id);
+    let url = "/pages/user/user_detail?id="+id;
+    wx.redirectTo({
+      url: url
+    })
   }
 })

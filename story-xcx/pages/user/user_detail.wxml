@@ -4,27 +4,28 @@
       <view class="weui-cells">
         <view class="weui-cell">
           <view class="weui-cell__hd">名称:</view>
-          <input class="weui0input" placeholder="">{{user.name}}</input>
+          <input type="text" class="weui-input" placeholder="" data-name="name" value="{{user.name}}" bindblur="handleInputChange"></input>
         </view>
          <view class="weui-cell">
           <view class="weui-cell__hd">性别:</view>
           <view class="weui-cell__bd">
-            <select class="weui-select" name="gender">
-              <option value="男">男</option>
-              <option value="女">女</option>
-            </select>
+            <radio-group bindchange="genderChange">
+                <radio wx:for="{{genderData}}" value="{{item.key}}" checked="{{item.key==user.gender}}">{{item.val}}</radio>
+            </radio-group>
           </view>
         </view>
-         <view class="weui-cell">
+        <view class="weui-cell">
           <view class="weui-cell__hd">手机号:</view>
-          <input class="weui0input" placeholder="请输入手机号">{{user.phone}}</input>
+          <input  type="text" class="weui-input" placeholder="请输入手机号" data-name="phone" value="{{user.phone}}" bindblur="handleInputChange"></input>
         </view>
-         <view class="weui-cell">
+        <view class="weui-cell">
           <view class="weui-cell__hd">账户类型:</view>
-          <select class="weui-select" name="type">
-              <option value="admin">管理员</option>
-              <option value="user">普通用户</option>
-            </select>
+           <radio-group bindchange="typeChange">
+                <radio wx:for="{{userTypeData}}" value="{{item.key}}" checked="{{item.key==user.type}}">{{item.val}}</radio>
+            </radio-group>
+        </view>
+        <view class="weui-cell">
+          <button bindtap="save">保存</button>
         </view>
       </view>
     </view>

@@ -67,10 +67,14 @@ func (web *UserWeb)Save(c context.Context,resp http.ResponseWriter,req *http.Req
 		return ar
 	}
 	data,_ := ioutil.ReadAll(req.Body)
-	storyObj := &entity.DBUser{}
-	json.Unmarshal(data,storyObj)
-	userDao.Insert(storyObj)
-	ar.Success(storyObj.Id)
+	userObj := &entity.DBUser{}
+	json.Unmarshal(data,userObj)
+	if userObj.Id==""{
+		userDao.Insert(userObj)
+	}else{
+		userDao.Update(userObj)
+	}
+	ar.Success(userObj.Id)
 	return ar
 }
 
@@ -95,8 +99,8 @@ func (web *UserWeb)Remove(c context.Context,resp http.ResponseWriter,req *http.R
 		ar.Error("100010","无权限")
 		return ar
 	}
-	req.ParseForm()
-	idStr := req.Form.Get("id")
+	reqMap := parseBody(req)
+	idStr := reqMap["id"]
 	userDao.Remove(idStr)
 	ar.Success(nil)
 	return ar
@@ -109,9 +113,8 @@ func (web *UserWeb)Detail(c context.Context,resp http.ResponseWriter,req *http.R
 		ar.Error("100010","无权限")
 		return ar
 	}
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	sObj := userDao.Get(idStr)
+	reqMap := parseBody(req)
+	sObj := userDao.Get(reqMap["id"])
 	ar.Success(sObj)
 	return ar
 }

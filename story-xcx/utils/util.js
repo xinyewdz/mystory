@@ -14,6 +14,28 @@ const formatNumber = n => {
   return n[1] ? n : '0' + n
 }
 
+function getPickerIdx(val,data){
+  let idx = 0;
+  if(val=='undefined'||val==""){
+    return idx;
+  }
+  for(;idx<data.length;idx++){
+    if (data[idx].key==val){
+      break;
+    }
+  }
+  return idx;
+}
+
+function getPickerVal(idx,data){
+  if(idx>=data.length){
+    idx = data.length-1;
+  }
+  return data[idx].key;
+}
+
 module.exports = {
-  formatTime: formatTime
+  formatTime: formatTime,
+  getPickerIdx:getPickerIdx,
+  getPickerVal:getPickerVal
 }
