@@ -48,6 +48,7 @@ func (dao *UserDao) Get(id string)*entity.DBUser{
 	return dao.GetObj(id).(*entity.DBUser)
 }
 
+
 func (dao *UserDao) GetByName(name string)*entity.DBUser{
 	query := bson.M{
 		"name":name,
