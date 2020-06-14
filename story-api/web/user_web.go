@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/leveldb"
+	"story-api/store/dao/mongodao"
 	"story-api/store/entity"
 	"story-api/util"
 	"story-api/web/model"
@@ -15,21 +15,19 @@ import (
 )
 
 var(
-	userDao = new(leveldb.UserDao)
+	userDao = mongodao.NewUserDao()
 )
 
 type UserWeb struct {
 }
 
-func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+func (web *UserWeb)Login(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	reqBody := make(map[string]string)
 	resolveBody(req,&reqBody)
 	code := reqBody["code"]
 	sResp := util.Code2Session(code)
-	apiResp := &common.ApiResponse{}
 	if sResp==nil{
-		apiResp.Error("501","getSession error")
-		return apiResp
+		return common.Error("501","getSession error")
 	}
 	user := userDao.GetByOpenId(sResp.OpenId)
 	if user==nil{
@@ -40,73 +38,72 @@ func (web *UserWeb)Login(context context.Context,resp http.ResponseWriter,req *h
 	user.Gender = reqBody["gender"]
 	user.Phone = reqBody["phone"]
 
-	if user.Id==0{
+	if user.Id==""{
+		user.Type = "user"
 		userDao.Insert(user)
 	}else{
 		userDao.Update(user)
 	}
 	accountRes := &model.AccountResp{}
 	util.CopyProperties(user,accountRes)
-	token := strconv.Itoa(time.Now().Nanosecond())
-	tokenMap[token]=user
+	token := strconv.Itoa(int(time.Now().Unix()))
+	key := TOKEN_KEY+token
+	ctx,_ := context.WithTimeout(context.Background(),5*time.Second)
+	valData,_ := json.Marshal(user)
+	res := redisClient.Set(ctx,key,valData,30*time.Minute)
+	mainLog.Info(res.Val())
 	accountRes.Token = token
-	apiResp.Success(accountRes)
-	return apiResp
+	return common.Success(accountRes)
 }
 
-func (web *UserWeb)UpdateAdmin(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	reqBody := make(map[string]string)
-	resolveBody(req,&reqBody)
-	userIdStr := reqBody["userId"]
-	userType := reqBody["type"];
-	userId,_ := strconv.Atoi(userIdStr)
-	user := userDao.Get(int64(userId))
-	if user!=nil{
-		user.Type=userType
-		userDao.Update(user)
+func (web *UserWeb)Save(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+	user := c.Value(USER_KEY).(*entity.DBUser)
+	if !isAdmin(user){
+		return common.Error("100010","无权限")
 	}
-	return new(common.ApiResponse).Success(nil)
-}
-
-func (web *UserWeb)Save(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	data,_ := ioutil.ReadAll(req.Body)
-	storyObj := &entity.DBUser{}
-	json.Unmarshal(data,storyObj)
-	userDao.Insert(storyObj)
-	ar := &common.ApiResponse{
-		Data:0,
+	userObj := &entity.DBUser{}
+	json.Unmarshal(data,userObj)
+	if userObj.Id==""{
+		userDao.Insert(userObj)
+	}else{
+		userDao.Update(userObj)
 	}
-	ar.Success(storyObj.Id)
-	return ar
+	return common.Success(userObj.Id)
 }
 
 
 
-func (web *UserWeb)List(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	ar := &common.ApiResponse{}
+func (web *UserWeb)List(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+	user := c.Value(USER_KEY).(*entity.DBUser)
+	if !isAdmin(user){
+		return common.Error("100010","无权限")
+	}
 	sl := userDao.List()
-	ar.Success(sl)
-	return ar
+	return common.Success(sl)
 }
 
-func (web *UserWeb)Remove(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	userDao.Remove(int64(id))
-	ar := &common.ApiResponse{
+func (web *UserWeb)Remove(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+	user := c.Value(USER_KEY).(*entity.DBUser)
+	if !isAdmin(user){
+		return common.Error("100010","无权限")
 	}
-	ar.Success(nil)
-	return ar
+	reqMap := parseBody(req)
+	idStr := reqMap["id"]
+	userDao.Remove(idStr)
+	return common.Success(nil)
 }
 
-func (web *UserWeb)Detail(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	sObj := userDao.Get(int64(id))
-	ar := &common.ApiResponse{}
-	ar.Success(sObj)
-	return ar
+func (web *UserWeb)Detail(c context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
+	user := c.Value(USER_KEY).(*entity.DBUser)
+	if !isAdmin(user){
+		return common.Error("100010","无权限")
+	}
+	reqMap := parseBody(req)
+	sObj := userDao.Get(reqMap["id"])
+	return common.Success(sObj)
 }
 
+func isAdmin(user *entity.DBUser)bool{
+	return user!=nil&&user.Type=="admin"
+}

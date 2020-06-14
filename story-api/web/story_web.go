@@ -7,15 +7,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/leveldb"
+	"story-api/store/dao/mongodao"
 	"story-api/store/entity"
 	"story-api/util"
-	"strconv"
 	"strings"
 )
 
 var(
-	storyDao = new(leveldb.StoryDao)
+	storyDao = mongodao.NewStoryDao()
 )
 
 type StoryWeb struct {
@@ -33,16 +32,16 @@ func (web *StoryWeb)Upload(context context.Context,resp http.ResponseWriter,req 
 		Data:"",
 	}
 	if fUrl==""{
-		ar.Error("500","error")
+		ar = common.Error("500","error")
 	}else{
-		ar.Success(fUrl)
+		ar = common.Success(fUrl)
 	}
 	return ar
 }
 
 func (web *StoryWeb)Save(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	data,_ := ioutil.ReadAll(req.Body)
-	mainLog.Info("story",zap.String("model",string(data)))
+	mainLog.Info("savestory",zap.String("model",string(data)))
 	storyObj := &entity.DBStory{}
 	reqMap := make(map[string]string)
 	json.Unmarshal(data,&reqMap)
@@ -50,44 +49,38 @@ func (web *StoryWeb)Save(context context.Context,resp http.ResponseWriter,req *h
 	storyObj.AudioUrl = reqMap["audio"]
 	storyObj.ImageUrl = reqMap["image"]
 	storyDao.Insert(storyObj)
-	ar := &common.ApiResponse{
-		Data:0,
-	}
-	ar.Success(storyObj.Id)
-	return ar
+	return common.Success(storyObj.Id)
 }
 
 
 
 func (web *StoryWeb)List(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	ar := &common.ApiResponse{}
 	sl := storyDao.List()
-	ar.Success(sl)
-	return ar
+	return common.Success(sl)
 }
 
 func (web *StoryWeb)Remove(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
 	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	storyDao.Remove(int64(id))
-	ar := &common.ApiResponse{
-	}
-	ar.Success(nil)
-	return ar
+	data,_ := ioutil.ReadAll(req.Body)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data,&reqMap)
+	storyDao.Remove(reqMap["id"])
+	return common.Success(nil)
 }
 
 func (web *StoryWeb)Detail(context context.Context,resp http.ResponseWriter,req *http.Request)*common.ApiResponse{
-	req.ParseForm()
-	idStr := req.Form.Get("id")
-	id,_ := strconv.Atoi(idStr)
-	sObj := storyDao.Detail(int64(id))
-	ar := &common.ApiResponse{}
+	data,_ := ioutil.ReadAll(req.Body)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data,&reqMap)
+	idStr := reqMap["id"]
+	sObj := storyDao.Get(idStr)
+	if sObj==nil{
+		return common.Error("40004","empty")
+	}
 	result := make(map[string]string)
 	result["name"] = sObj.Name
 	result["url"] = sObj.AudioUrl
 	result["image"] = sObj.ImageUrl
-	result["id"] = strconv.Itoa(int(sObj.Id))
-	ar.Success(result)
-	return ar
+	result["id"] = sObj.Id
+	return common.Success(result)
 }

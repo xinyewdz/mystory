@@ -5,6 +5,7 @@ import (
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
+	"story-api/util/config"
 )
 
 var(
@@ -15,8 +16,8 @@ var(
 )
 
 func init(){
-	appId = confMap["wx.appid"]
-	secret = confMap["wx.secretkey"]
+	appId = config.Get("wx.appid")
+	secret = config.Get("wx.secretkey")
 }
 
 type SessionResp struct {

@@ -6,14 +6,19 @@ type ApiResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func (ar *ApiResponse) Error(code,msg string)*ApiResponse{
-	ar.Msg = msg
-	ar.Code = code
+func Success(data interface{})*ApiResponse{
+	ar := &ApiResponse{
+		Code: "200",
+		Msg: "success",
+		Data: data,
+	}
 	return ar
 }
 
-func (ar *ApiResponse) Success(data interface{})*ApiResponse{
-	ar.Data = data
-	ar.Code = "200"
+func Error(code,msg string)*ApiResponse{
+	ar := &ApiResponse{
+		Code: code,
+		Msg: msg,
+	}
 	return ar
 }
