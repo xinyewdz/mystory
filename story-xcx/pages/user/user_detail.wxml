@@ -1,0 +1,33 @@
+<view class="page weui-form">
+  <view class="weui-form_control-area">
+    <view class="weui-cells__group">
+      <view class="weui-cells">
+        <view class="weui-cell">
+          <view class="weui-cell__hd">名称:</view>
+          <input type="text" class="weui-input" placeholder="" data-name="name" value="{{user.name}}" bindblur="handleInputChange"></input>
+        </view>
+         <view class="weui-cell">
+          <view class="weui-cell__hd">性别:</view>
+          <view class="weui-cell__bd">
+            <radio-group bindchange="genderChange">
+                <radio wx:for="{{genderData}}" value="{{item.key}}" checked="{{item.key==user.gender}}">{{item.val}}</radio>
+            </radio-group>
+          </view>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__hd">手机号:</view>
+          <input  type="text" class="weui-input" placeholder="请输入手机号" data-name="phone" value="{{user.phone}}" bindblur="handleInputChange"></input>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__hd">账户类型:</view>
+           <radio-group bindchange="typeChange">
+                <radio wx:for="{{userTypeData}}" value="{{item.key}}" checked="{{item.key==user.type}}">{{item.val}}</radio>
+            </radio-group>
+        </view>
+        <view class="weui-cell">
+          <button bindtap="save">保存</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

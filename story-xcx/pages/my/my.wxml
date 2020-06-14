@@ -19,6 +19,11 @@
           <view class="weui-cell__hd">故事列表</view>
         </navigator>
       </view>
+      <view class="weui-cell"  wx:if="{{user.type=='admin'}}">
+        <navigator url="/pages/user/user_list">
+          <view class="weui-cell__hd">用户列表</view>
+        </navigator>
+      </view>
       <view class="weui-cell">
         <navigator url="/pages/my/about">
           <view class="weui-cell__hd">关于</view>

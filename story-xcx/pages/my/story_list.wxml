@@ -8,10 +8,9 @@
   <view class="page_bd">
     <view class="weui-media-box weui-media-box_small-appmsg">
       <scroll-view class="weui-cells" scroll-y="true" style="height: 100%;">
-        <view wx:for="{{storyList}}" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" width="100%">
+        <view wx:for="{{storyList}}" class="weui-cell  weui-cell_access" width="100%">
           <view class="weui-cell__hd">{{item.name}}</view>
-          <view class="weui-cell__bd" >
-            <a class="weui-btn weui-btn_mini weui-btn_warn" style="float:right"  bindtap="storyDelete" id="{{item.id}}">删除</a>
+          <view class="weui-cell__ft" >
           </view>
         </view>
       </scroll-view>
