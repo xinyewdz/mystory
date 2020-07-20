@@ -8,7 +8,7 @@
             <label class="weui-label">名称:</label>
           </view>
           <view class="weui-cell__bd weui-flex">
-              <input type="text" id="name" bindblur="nameEvent" class="weui-input" placeholder="请输入故事名称"></input>
+              <input type="text" id="name" bindinput="nameEvent" class="weui-input" value="{{story.name}}" placeholder="请输入故事名称"></input>
           </view>
         </view>
         <view class=" weui-cell weui-cell_active">
@@ -16,7 +16,15 @@
             <label class="weui-label">音频文件:</label>
           </view>
           <view class="weui-cell__bd  weui-flex" bindtap="chooseAudio">
-            <input class="weui-input" value="{{audioName}}" placeholder="选择音频文件" disabled></input>
+            <input class="weui-input" value="{{story.audioUrl}}" placeholder="选择音频文件" disabled></input>
+          </view>
+        </view>
+        <view class=" weui-cell weui-cell_active weui-cell_switch">
+          <view class="weiui-cell__bd">
+            <label class="weui-label">是否公开:</label>
+          </view>
+          <view class="weui-cell__ft  weui-flex" >
+            <switch  checked="{{story.isPublic}}" bindchange="bindSwitchEvent"></switch>
           </view>
         </view>
         <view class=" weui-cell weui-cell_active">
@@ -25,7 +33,7 @@
           </view>
           <view class="weui-cells">
             <view class="weui-cell__bd weui-flex" bindtap="chooseImg">
-              <image style="width:200rpx;height:200rpx;" src="{{image}}"></image>
+              <image style="width:200rpx;height:200rpx;" src="{{story.imageUrl}}"></image>
             </view>
           </view>
           

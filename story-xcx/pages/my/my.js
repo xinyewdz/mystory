@@ -30,7 +30,10 @@ Page({
           var data = {
             code:res.code,
             nickName:userInfo.nickName,
-            gender:userInfo.gender
+            gender:userInfo.gender+"",
+            avatarUrl:userInfo.avatarUrl,
+            province:userInfo.province,
+            city:userInfo.city
           };
           app.postData("/login",data,function(respData){
             that.setData({

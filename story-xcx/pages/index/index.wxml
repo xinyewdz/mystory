@@ -5,9 +5,9 @@
     <view class="weui-pannel__bd">
       <view class="weui-media-box weui-media-box_small-appmsg">
         <scroll-view class="weui-cells" scroll-y="true">
-          <view wx:for="{{storyList}}" class="weui-cell weui-cell_active weui-cell_access weui-cell_example" bindtap="play" data-idx="{{index}}" id="{{item.id}}">
+          <view wx:for="{{storyList}}" class="weui-cell weui-cell_active weui-cell_access" bindtap="play" data-idx="{{index}}" id="{{item.id}}">
             <view class="weui-cell__hd">
-              <image style="width: 20px; height: 20px; margin-right: 16px; display: block;" src="{{item.image}}"></image>
+              <view class="weui-cell__hd"><image class="avatar" src="{{item.imageUrl}}"/></view>
             </view>
             <view class="weui-cell__bd weui-cell_primary">
               <p>{{item.name}}</p>

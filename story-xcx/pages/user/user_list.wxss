@@ -1,1 +1,5 @@
 /* pages/my/user_list.wxss */
+
+.avatar{
+  width: 20px; height: 20px; margin-right: 16px; display: block;
+}

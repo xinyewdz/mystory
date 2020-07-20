@@ -55,8 +55,13 @@ Page({
     adm["src"] = story.audioUrl
     adm["title"] = story.name
     adm["coverImgUrl"]= story.imageUrl
-    var that = this;
     adm.play()
+    var req={
+      "storyId":story.id
+    }
+    app.postData("/play",req,function(){
+
+    });
    
   },
   //事件处理函数

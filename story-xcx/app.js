@@ -42,7 +42,7 @@ App({
         token:that.getToken()
       },
       data:data,
-      success:function(resp){
+      complete:function(resp){
         var respData = resp.data;
         if(respData.code==200){
           callback(respData.data);

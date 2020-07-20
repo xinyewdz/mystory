@@ -3,12 +3,19 @@ const app = getApp()
 const audio = wx.createInnerAudioContext();
 Page({
   data: {
-    "name":"",
-    "image":"",
-    "audioPath":"",
-    "audioName":""
+    story:{
+      "name":"",
+      "imageUrl":"",
+      "audioUrl":"",
+      "isPublic":false
+    },
+    
   },
   onLoad: function (options) {
+    let id = options.id
+    if(id&&id!=""){
+      this.getStory(id)
+    }
     var token = app.getToken();
     if(!token){
       wx.switchTab({
@@ -22,26 +29,15 @@ Page({
       "title":"上传中"
     });
     var that = this;
-    let name = this.data.name;
-    console.log("savestory,"+name);
-    that.upload(that.data.audioPath,name,function(aPath){
-      that.upload(that.data.image,name,function(iPath){
-        var data = {
-          name:name,
-          audio:aPath,
-          image:iPath
-        };
-        app.postData("/save",data,function(){
-          wx.switchTab({
-            url: '../index/index',
-            success:function(){
-              var page = getCurrentPages().pop()
-              if(page==undefined||page==null) return;
-              page.onLoad();
-            }
-          })
-        });
-      });
+    app.postData("/save",that.data.story,function(){
+      wx.switchTab({
+        url: '../index/index',
+        success:function(){
+          var page = getCurrentPages().pop()
+          if(page==undefined||page==null) return;
+          page.onLoad();
+        }
+      })
     });
     
   },
@@ -74,25 +70,49 @@ Page({
       }
     })
   },
+  getStory:function(id){
+    let req={
+      "id":id
+    }
+    let that = this;
+    app.postData("/story",req,function(resp){
+      console.log(resp)
+      that.setData({
+        story:resp
+      })
+    });
+  },
   nameEvent:function(event){
-    var name = event.detail.value;
-    console.log("name event."+name);
+    var val = event.detail.value;
+    console.log("name event."+val);
+    let story = this.data.story
+    story["name"]=val
     this.setData({
-      "name":name
+      story:story
+    })
+  },
+  bindSwitchEvent:function(e){
+    let val=e.detail.value;
+    let story = this.data.story
+    story["isPublic"]=val
+    this.setData({
+      story:story
     })
   },
   chooseAudio:function(){
     var that = this;
-    console.log("chooseAudio event")
     wx.chooseMessageFile({
         count:1,
         type:"all",
         success (res) {
           const tempFilePaths = res.tempFiles;
-          that.setData({
-            "audioPath":tempFilePaths[0]["path"],
-            "audioName":tempFilePaths[0]["name"]
-          })
+          that.upload(tempFilePaths[0]["path"],that.data.story["name"],function(apath){
+            let story = that.data.story;
+            story["audioUrl"]=apath
+            that.setData({
+              story:story
+            })
+          });
         }
       })
   },
@@ -102,9 +122,13 @@ Page({
     wx.chooseImage({
       success (res) {
         const tempFilePaths = res.tempFilePaths;
-        that.setData({
-          "image":tempFilePaths[0]
-        })
+        that.upload(tempFilePaths[0],that.data.story["name"],function(apath){
+          let story = that.data.story;
+          story["imageUrl"]=apath
+          that.setData({
+            story:story
+          })
+        });
       }
     })
   }
