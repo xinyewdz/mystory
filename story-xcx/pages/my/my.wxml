@@ -14,7 +14,7 @@
   </view>
   <view class="page__bd">
     <view class="weui-cells">
-      <view class="weui-cell"  wx:if="{{user.type=='admin'}}">
+      <view class="weui-cell"  wx:if="{{user.enableStoryList}}">
         <navigator url="/pages/my/story_list">
           <view class="weui-cell__hd">故事列表</view>
         </navigator>

@@ -1,20 +1,32 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"story-api/web"
 )
 
 var (
-	storyWeb = new(web.StoryWeb)
-	userWeb  = new(web.UserWeb)
+	storyWeb             = new(web.StoryWeb)
+	userWeb              = new(web.UserWeb)
+	enableStoryList bool = true
+	help                 = false
 )
 
 func init() {
+	flag.BoolVar(&enableStoryList, "sl", true, "enable story list")
+	flag.BoolVar(&help, "h", false, "help usage")
+	flag.Parse()
 }
 
 func main() {
+	if help {
+		flag.PrintDefaults()
+		return
+	}
+	userWeb.EnableStoryList = enableStoryList
+	log.Println("server run enableStoryList", enableStoryList)
 	mux := http.NewServeMux()
 	regist(mux)
 	port := "8060"
@@ -32,6 +44,7 @@ func regist(mux *http.ServeMux) {
 }
 
 func registStory(routeMap map[string]web.RouterHttpHandler) {
+	routeMap["/play/list"] = storyWeb.PlayList
 	routeMap["/list"] = storyWeb.List
 	routeMap["/story"] = storyWeb.Detail
 	routeMap["/upload"] = storyWeb.Upload

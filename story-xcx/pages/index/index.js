@@ -72,7 +72,7 @@ Page({
     });
 },
   listStory:function(callback){
-    app.postData("/list",{},function(respData){
+    app.postData("/play/list",{},function(respData){
       callback(respData)
     });
   }

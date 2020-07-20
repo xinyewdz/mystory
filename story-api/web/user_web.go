@@ -19,6 +19,7 @@ var (
 )
 
 type UserWeb struct {
+	EnableStoryList bool
 }
 
 func (web *UserWeb) Login(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
@@ -48,6 +49,7 @@ func (web *UserWeb) Login(c context.Context, resp http.ResponseWriter, req *http
 		userDao.Update(user)
 	}
 	accountRes := &model.AccountResp{}
+	accountRes.EnableStoryList = ((user.Type == entity.USER_TYPE_ADMIN) || web.EnableStoryList)
 	util.CopyProperties(user, accountRes)
 	token := strconv.Itoa(int(time.Now().Unix()))
 	key := TOKEN_KEY + token

@@ -17,6 +17,7 @@ import (
 var (
 	storyDao           = mongodao.NewStoryDao()
 	storyPlayDetailDao = mongodao.NewStoryPlayDetailDao()
+	storyFavoriteDao   = mongodao.NewStoryFavoriteDao()
 )
 
 type StoryWeb struct {
@@ -74,25 +75,32 @@ func (web *StoryWeb) Save(context context.Context, resp http.ResponseWriter, req
 	return common.Success(storyObj.Id)
 }
 
+func (web *StoryWeb) PlayList(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
+	user, ok := c.Value(USER_KEY).(*entity.DBUser)
+	var sl []*entity.DBStory
+
+	flag := true
+	sl = storyDao.List(&flag, "")
+	if ok {
+
+		slMy := storyDao.List(nil, user.Id)
+		for _, s := range slMy {
+			exist := isExist(s, sl)
+			if !exist {
+				sl = append(sl, s)
+			}
+		}
+	}
+	return common.Success(sl)
+}
+
 func (web *StoryWeb) List(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
 	user, ok := c.Value(USER_KEY).(*entity.DBUser)
 	var sl []*entity.DBStory
 	if ok && user.Type == entity.USER_TYPE_ADMIN {
 		sl = storyDao.List(nil, "")
 	} else {
-		flag := true
-		sl = storyDao.List(&flag, "")
-		if ok {
-
-			slMy := storyDao.List(nil, user.Id)
-			for _, s := range slMy {
-				exist := isExist(s, sl)
-				if !exist {
-					sl = append(sl, s)
-				}
-			}
-		}
-
+		sl = storyDao.List(nil, user.Id)
 	}
 	return common.Success(sl)
 }
@@ -116,6 +124,46 @@ func (web *StoryWeb) Detail(context context.Context, resp http.ResponseWriter, r
 		return common.Error("40004", "empty")
 	}
 	return common.Success(sObj)
+}
+
+func (web *StoryWeb) AddFavorite(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
+	user, _ := c.Value(USER_KEY).(*entity.DBUser)
+	userId := user.Id
+	data, _ := ioutil.ReadAll(req.Body)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data, &reqMap)
+	storyId := reqMap["storyId"]
+	favorite := &entity.DBStoryFavorite{
+		StoryId: storyId,
+		UserId:  userId,
+	}
+	storyFavoriteDao.Insert(favorite)
+	return common.Success("")
+}
+
+func (web *StoryWeb) RemoveFavorite(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
+	user, _ := c.Value(USER_KEY).(*entity.DBUser)
+	userId := user.Id
+	data, _ := ioutil.ReadAll(req.Body)
+	reqMap := make(map[string]string)
+	json.Unmarshal(data, &reqMap)
+	storyId := reqMap["storyId"]
+	storyFavoriteDao.Remove(userId, storyId)
+	return common.Success("")
+}
+
+func (web *StoryWeb) ListFavorite(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
+	user, _ := c.Value(USER_KEY).(*entity.DBUser)
+	userId := user.Id
+	fl := storyFavoriteDao.List(userId, "")
+	sl := make([]*entity.DBStory, len(fl))
+	for _, f := range fl {
+		s := storyDao.Get(f.StoryId)
+		if s != nil {
+			sl = append(sl, s)
+		}
+	}
+	return common.Success(sl)
 }
 
 func isExist(s *entity.DBStory, sl []*entity.DBStory) bool {

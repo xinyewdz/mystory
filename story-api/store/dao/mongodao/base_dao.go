@@ -168,3 +168,12 @@ func (dao *BaseDao) RemoveObj(id string) {
 		panic(err)
 	}
 }
+
+func (dao *BaseDao) RemoveObjByFilter(filter map[string]interface{}) int64 {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	result, err := dClient.Collection(dao.Table).DeleteOne(ctx, filter)
+	if err != nil {
+		panic(err)
+	}
+	return result.DeletedCount
+}

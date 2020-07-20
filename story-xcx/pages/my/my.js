@@ -6,7 +6,6 @@ Page({
     isLogin:false
   },
   onShow: function (options) {
-    
   },
   logout:function(){
     this.setData({
