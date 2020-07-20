@@ -53,7 +53,7 @@ func (web *UserWeb) Login(c context.Context, resp http.ResponseWriter, req *http
 	key := TOKEN_KEY + token
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	valData, _ := json.Marshal(user)
-	res := redisClient.Set(ctx, key, valData, 30*time.Minute)
+	res := redisClient.Set(ctx, key, valData, 240*time.Hour)
 	mainLog.Info(res.Val())
 	accountRes.Token = token
 	return common.Success(accountRes)
