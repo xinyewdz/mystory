@@ -77,13 +77,16 @@ func (web *StoryWeb) Save(context context.Context, resp http.ResponseWriter, req
 }
 
 func (web *StoryWeb) PlayList(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
-	user, ok := c.Value(USER_KEY).(*entity.DBUser)
+	cuser := c.Value(USER_KEY)
+	var user *entity.DBUser
+	if cuser != nil {
+		user = cuser.(*entity.DBUser)
+	}
 	var sl []*entity.DBStory
 
 	flag := true
 	sl = storyDao.List(&flag, "")
-	if ok {
-
+	if user != nil {
 		slMy := storyDao.List(nil, user.Id)
 		for _, s := range slMy {
 			exist := isExist(s, sl)
