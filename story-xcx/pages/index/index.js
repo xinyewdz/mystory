@@ -5,7 +5,13 @@ const adm = app.adm;
 Page({
   data: {
     storyList: [],
-    idx:0
+    idx:0,
+    playStory:{},
+    showPlayer:false,
+    playState:0
+  },
+  onShareAppMessage:function(){
+
   },
   onReady:function(){
     adm.onEnded(this.next);
@@ -39,6 +45,9 @@ Page({
       idx = 0;
     }
     var story = storyList[idx];
+    this.setData({
+      playStory:story
+    })
     this.playStory(story,idx)
 
   },
@@ -46,6 +55,11 @@ Page({
     var id = event.currentTarget.id;
     var idx = event.currentTarget.dataset.idx;
     var story = this.data.storyList[idx];
+    this.setData({
+      showPlayer:true,
+      playState:1,
+      playStory:story
+    })
     this.playStory(story,idx)
   },
   playStory:function(story,idx){
@@ -75,5 +89,19 @@ Page({
     app.postData("/play/list",{},function(respData){
       callback(respData)
     });
+  },
+  handPlayEvent:function(){
+    let playState = this.data.playState;
+    if(playState==1){
+      this.setData({
+        playState:2,
+      });
+      adm.pause();
+    }else{
+      this.setData({
+        playState:1,
+      });
+      adm.play()
+    }
   }
 })

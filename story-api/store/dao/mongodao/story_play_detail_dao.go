@@ -23,3 +23,35 @@ func (dao *StoryPlayDetailDao) Insert(obj *entity.DBStoryPlayDetail) {
 	obj.Id = primitive.NewObjectID().Hex()
 	dao.InsertObj(obj)
 }
+
+func (dao *StoryPlayDetailDao) List(storyId string, userId string) []*entity.DBStoryPlayDetail {
+	filter := make(map[string]interface{})
+	if storyId != "" {
+		filter["storyId"] = storyId
+	}
+	if userId != "" {
+		filter["userId"] = userId
+	}
+	objs := dao.ListByFilter(filter)
+	if objs == nil {
+		return nil
+	}
+	list := []*entity.DBStoryPlayDetail{}
+	for _, obj := range objs {
+		list = append(list, obj.(*entity.DBStoryPlayDetail))
+	}
+	return list
+}
+
+func (dao *StoryPlayDetailDao) Count(storyId string, userId string) int64 {
+	filter := make(map[string]interface{})
+	if storyId != "" {
+		filter["storyId"] = storyId
+	}
+	if userId != "" {
+		filter["userId"] = userId
+	}
+	total := dao.CountByFilter(filter)
+
+	return total
+}

@@ -1,16 +1,58 @@
 /**index.wxss**/
-.story-list{
+.player{
+  position: fixed;
+  bottom: 0;
   width: 100%;
-  display: block;
-  align-items: left;
+  height: 100rpx;
+  background-color: rgba(255, 255, 255, .9);
+  padding: 10rpx 0;
+  display: flex;
+  justify-content: space-between;
 }
-
-.story-v{
-  width: 90%;
-  height: 50rpx;
-  display: inline-block;
-  border-width: 0 0 4rpx 0;
-  margin: 10rpx 10rpx 10rpx 10rpx;
-  border-color:#ccc;
-  border-style: solid;
+.p-left{
+  display: flex;
+}
+.music-pic{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50rpx;
+  margin-left: 30rpx;
+}
+.music-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-left: 20rpx;
+}
+.music-name{
+  font-size: 30rpx;
+  font-weight: bold;
+}
+.music-artist{
+  font-size: 25rpx;
+  color: #6a6a6a;
+  font-weight: bold;
+}
+.p-right{
+  align-self: center;
+  margin-right: 50rpx;
+}
+.p-right image{
+  width: 30rpx;
+  height: 30rpx;
+}
+.playing{
+  animation: playing 3.5s linear infinite;
+  animation-play-state: running;
+}
+.paused{
+  animation: playing 3.5s linear infinite;
+  animation-play-state: paused;
+}
+@keyframes playing{
+	0%{-webkit-transform:rotate(0deg);}
+	25%{-webkit-transform:rotate(90deg);}
+	50%{-webkit-transform:rotate(180deg);}
+	75%{-webkit-transform:rotate(270deg);}
+	100%{-webkit-transform:rotate(360deg);} 
 }

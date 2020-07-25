@@ -9,6 +9,7 @@ import (
 	"story-api/store/dao/mongodao"
 	"story-api/store/entity"
 	"story-api/util"
+	"story-api/web/model"
 	"strings"
 
 	"go.uber.org/zap"
@@ -91,7 +92,28 @@ func (web *StoryWeb) PlayList(c context.Context, resp http.ResponseWriter, req *
 			}
 		}
 	}
-	return common.Success(sl)
+	list := []*model.StoryPlayResp{}
+	for _, s := range sl {
+		resp := &model.StoryPlayResp{
+			Id:       s.Id,
+			Name:     s.Name,
+			ImageUrl: s.ImageUrl,
+			AudioUrl: s.AudioUrl,
+		}
+		user := userDao.Get(s.CreateUser)
+		if user != nil {
+			resp.CreateUser = user.Name
+		} else {
+			resp.CreateUser = "-"
+		}
+		resp.CreateTime = s.CreateTime.Format("2006-01-02")
+		total := storyPlayDetailDao.Count(s.Id, "")
+		resp.TotalPlay = total
+		list = append(list, resp)
+
+	}
+
+	return common.Success(list)
 }
 
 func (web *StoryWeb) List(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {

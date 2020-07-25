@@ -2,12 +2,16 @@
 <view class="page" style="height:100%">
   <view class="weui-panel">
     <view class="weui-panel__hd">故事汇</view>
-    <view class="weui-panel__bd weui-cells">
+    <view class="weui-panel__bd">
       <block wx:if="{{storyList.length>0}}">
-        <view wx:for="{{storyList}}" class="weui-cell weui-cell_active weui-cell_access" bindtap="play" data-idx="{{index}}" id="{{item.id}}">
-          <view class="weui-cell__hd"><image class="list-img" src="{{item.imageUrl}}"/></view>
-          <view class="weui-cell__bd weui-cell_primary">
-            <p>{{item.name}}</p>
+        <view wx:for="{{storyList}}" class="weui-media-box weui-media-box_appmsg" bindtap="play" data-idx="{{index}}" id="{{item.id}}">
+          <view class="weui-media-box__hd"><image class="weui-media-box__thumb" src="{{item.imageUrl}}"/></view>
+          <view class="weui-media-box__bd">
+            <view class="weui-media-box__title">{{item.name}}</view>
+            <view class="weui-media-box__info">
+              <view class="weui-media-box__info__meta">{{item.createUser}}</view>
+              <view class="weui-media-box__info__meta">{{item.createTime}}</view>
+            </view>
           </view>
         </view>
       </block>
@@ -24,5 +28,17 @@
       </block>
     </view>
     <view class="weui-panel__ft"></view>
+  </view>
+</view>
+<view wx:if="{{showPlayer}}" class="player" bindtap="handPlayEvent">
+  <view class="p-left" >
+    <image class="{{playState== 1?'music-pic playing':'music-pic paused' }}" src="{{playStory.imageUrl}}" mode='aspectFit'></image>
+    <view class="music-info">
+      <text class="music-name">{{playStory.name}}</text>
+      <text class="music-artist">{{playStory.createUser}}</text>
+    </view>
+  </view>
+  <view class="p-right">
+    <image src="{{playState == 1?'/static/image/pause.png':'/static/image/start.png' }}" mode='aspectFit'></image>
   </view>
 </view>

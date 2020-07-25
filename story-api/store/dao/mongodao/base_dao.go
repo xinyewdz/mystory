@@ -109,6 +109,19 @@ func (dao *BaseDao) ListAll() []interface{} {
 	}
 }
 
+func (dao *BaseDao) CountByFilter(filter map[string]interface{}) int64 {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	query := bson.M{}
+	for key, val := range filter {
+		query[key] = val
+	}
+	total, err := dClient.Collection(dao.Table).CountDocuments(ctx, query)
+	if err != nil {
+		panic(err)
+	}
+	return total
+}
+
 func (dao *BaseDao) ListByFilter(filter map[string]interface{}, opts ...*options.FindOptions) []interface{} {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	t := reflect.TypeOf(dao.Obj)
