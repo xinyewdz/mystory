@@ -1,20 +1,16 @@
 <!--pages/my/story_list.wxml-->
 <view class="page">
   <view class="page_bd">
-    <navigator url="/pages/my/story_add">
-      <view class="weui-btn weui-btn_mini weui-btn_primary">添加</view>
-    </navigator>
-  </view>
-  <view class="page_bd">
-    <view class="weui-media-box weui-media-box_small-appmsg">
-      <scroll-view class="weui-cells" scroll-y="true" style="height: 100%;">
+      <view class="weui-cells">
         <navigator wx:for="{{storyList}}" class="weui-cell  weui-cell_access" width="100%" url="/pages/my/story_add?id={{item.id}}">
-          <view class="weui-cell__hd"><image class="avatar" src="{{item.imageUrl}}"/></view>
+          <view class="weui-cell__hd"><image class="list-img" src="{{item.imageUrl}}"/></view>
           <view class="weui-cell__bd">{{item.name}}</view>
           <view class="weui-cell__ft" >
           </view>
         </navigator>
-      </scroll-view>
+      </view>
     </view>
-  </view>
+</view>
+<view class="round-click">
+  <navigator class="round-bd" url='/pages/my/story_add' >添加故事</navigator >
 </view>

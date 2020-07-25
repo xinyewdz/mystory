@@ -10,10 +10,11 @@
     "pages/user/user_detail"
   ],
   "window": {
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "球球故事汇",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh":true
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
@@ -32,7 +33,12 @@
       }
     ]
   },
-  "usingComponents": {},
+  "usingComponents": {
+
+  },
+  "useExtendedLib": {
+    "weui": true
+  },
   "requiredBackgroundModes": [
     "audio"
   ]

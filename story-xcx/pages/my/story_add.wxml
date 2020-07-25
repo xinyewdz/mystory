@@ -10,33 +10,40 @@
           <view class="weui-cell__bd weui-flex">
               <input type="text" id="name" bindinput="nameEvent" class="weui-input" value="{{story.name}}" placeholder="请输入故事名称"></input>
           </view>
-        </view>
-        <view class=" weui-cell weui-cell_active">
+      </view>
+      <view class=" weui-cell weui-cell_active">
           <view class="weiui-cell__hd">
             <label class="weui-label">音频文件:</label>
           </view>
           <view class="weui-cell__bd  weui-flex" bindtap="chooseAudio">
             <input class="weui-input" value="{{story.audioUrl}}" placeholder="选择音频文件" disabled></input>
           </view>
-        </view>
-        <view class=" weui-cell weui-cell_active weui-cell_switch">
+      </view>
+      <view class=" weui-cell weui-cell_active weui-cell_switch">
           <view class="weiui-cell__bd">
             <label class="weui-label">是否公开:</label>
           </view>
           <view class="weui-cell__ft  weui-flex" >
             <switch  checked="{{story.isPublic}}" bindchange="bindSwitchEvent"></switch>
           </view>
-        </view>
-        <view class=" weui-cell weui-cell_active">
-          <view class="weiui-cells__title">
-            <label class="weui-label">封面文件:</label>
-          </view>
-          <view class="weui-cells">
-            <view class="weui-cell__bd weui-flex" bindtap="chooseImg">
-              <image style="width:200rpx;height:200rpx;" src="{{story.imageUrl}}"></image>
+      </view>
+      <view class=" weui-cell weui-cell_active">
+          <view class="weui-cell__bd weui-flex" >
+            <view class="weui-uploader">
+              <view class="weui-uploader__hd"><label class="weui-label">封面文件:</label></view>
+              <view class="weui-uploader__bd">
+                <view class="weui-uploader__files">
+
+                  <view id="story-image" wx:if="{{!showImgUpload}}" class="weui-uploader__file {{story.imageUrl==''?'weui-uploader__file_status':''}}" style="background-image: url({{story.imageUrl}});">
+                    <view class="weui-uploader__file-content">上传中...</view>
+                  </view>
+                </view>
+                <view wx:if="{{showImgUpload}}" class="weui-uploader__input-box">
+                  <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="" bindtap="chooseImg"/>
+                </view>
+              </view>
             </view>
           </view>
-          
         </view>
         <view class="weui-form__opr-area" bindtap="saveStory">
           <a class="weui-btn weui-btn_primary">确定</a>

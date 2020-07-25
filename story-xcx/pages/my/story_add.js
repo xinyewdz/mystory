@@ -9,11 +9,15 @@ Page({
       "audioUrl":"",
       "isPublic":false
     },
+    showImgUpload:true
     
   },
   onLoad: function (options) {
     let id = options.id
     if(id&&id!=""){
+      this.setData({
+        showImgUpload:false
+      })
       this.getStory(id)
     }
     var token = app.getToken();
@@ -118,14 +122,17 @@ Page({
   },
   chooseImg:function(){
     var that = this;
-    console.log("chooseImg event")
+    let story = that.data.story;
+    that.setData({
+      showImgUpload:false
+    });
     wx.chooseImage({
       success (res) {
         const tempFilePaths = res.tempFilePaths;
         that.upload(tempFilePaths[0],that.data.story["name"],function(apath){
-          let story = that.data.story;
           story["imageUrl"]=apath
           that.setData({
+            showImgUpload:false,
             story:story
           })
         });
