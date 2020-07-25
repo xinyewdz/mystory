@@ -23,6 +23,7 @@ func init() {
 	redisClient = redisutil.Client
 	publicUrl["/login"] = nil
 	publicUrl["/play/list"] = nil
+	publicUrl["/play"] = nil
 }
 
 type RouterHttpHandler func(context.Context, http.ResponseWriter, *http.Request) *common.ApiResponse
