@@ -10,6 +10,8 @@ import (
 var (
 	storyWeb             = new(web.StoryWeb)
 	userWeb              = new(web.UserWeb)
+	userAdminWeb         = new(web.UserAdminWeb)
+	storyAdminWeb        = new(web.StoryAdminWeb)
 	enableStoryList bool = true
 	help                 = false
 )
@@ -36,14 +38,21 @@ func main() {
 
 func regist(mux *http.ServeMux) {
 	routeMap := make(map[string]web.RouterHttpHandler)
-	registStory(routeMap)
-	registUser(routeMap)
+	registryStory(routeMap)
+	registryUser(routeMap)
+	registryAdmin(routeMap)
 	for k, v := range routeMap {
 		mux.Handle(k, v)
 	}
 }
 
-func registStory(routeMap map[string]web.RouterHttpHandler) {
+func registryAdmin(routeMap map[string]web.RouterHttpHandler) {
+	routeMap["/admin/login"] = userAdminWeb.Login
+	routeMap["/admin/user/playDetail"] = userAdminWeb.ListStoryPlayDetail
+	routeMap["/admin/story/playDetail"] = storyAdminWeb.ListUserPlayDetail
+}
+
+func registryStory(routeMap map[string]web.RouterHttpHandler) {
 	routeMap["/play/list"] = storyWeb.PlayList
 	routeMap["/list"] = storyWeb.List
 	routeMap["/story"] = storyWeb.Detail
@@ -54,7 +63,7 @@ func registStory(routeMap map[string]web.RouterHttpHandler) {
 
 }
 
-func registUser(routeMap map[string]web.RouterHttpHandler) {
+func registryUser(routeMap map[string]web.RouterHttpHandler) {
 	routeMap["/user/detail"] = userWeb.Detail
 	routeMap["/user/list"] = userWeb.List
 	routeMap["/user/save"] = userWeb.Save

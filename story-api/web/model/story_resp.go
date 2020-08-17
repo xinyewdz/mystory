@@ -9,3 +9,9 @@ type StoryPlayResp struct {
 	TotalPlay  int64  `json:"totalPlay"`
 	CreateTime string `json:"createTime"`
 }
+
+type StoryPlayDetailResp struct {
+	Name     string `json:"name"`
+	Id       string `json:"id"`
+	PlayTime string `json:"playTime"`
+}

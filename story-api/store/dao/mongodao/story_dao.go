@@ -4,7 +4,9 @@ import (
 	"story-api/store/entity"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type StoryDao struct {
@@ -38,8 +40,13 @@ func (dao *StoryDao) List(isPublic *bool, createUser string) []*entity.DBStory {
 	if createUser != "" {
 		filter["createUser"] = createUser
 	}
+	orderOpt := &options.FindOptions{
+		Sort: bson.M{
+			"createTime": -1,
+		},
+	}
 
-	objs := dao.ListByFilter(filter)
+	objs := dao.ListByFilter(filter, orderOpt)
 	if objs == nil {
 		return nil
 	}
