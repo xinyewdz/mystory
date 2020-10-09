@@ -6,19 +6,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/mongodao"
 	"story-api/store/entity"
 	"story-api/util"
 	"story-api/web/model"
 	"strings"
 
 	"go.uber.org/zap"
-)
-
-var (
-	storyDao           = mongodao.NewStoryDao()
-	storyPlayDetailDao = mongodao.NewStoryPlayDetailDao()
-	storyFavoriteDao   = mongodao.NewStoryFavoriteDao()
 )
 
 type StoryWeb struct {
@@ -46,7 +39,7 @@ func (web *StoryWeb) Upload(context context.Context, resp http.ResponseWriter, r
 func (web *StoryWeb) Play(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
 	user, ok := c.Value(USER_KEY).(*entity.DBUser)
 	var userId string
-	if !ok {
+	if !ok || user == nil {
 		userId = "0"
 	} else {
 		userId = user.Id

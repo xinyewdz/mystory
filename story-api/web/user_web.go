@@ -6,16 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"story-api/common"
-	"story-api/store/dao/mongodao"
 	"story-api/store/entity"
 	"story-api/util"
 	"story-api/web/model"
 	"strconv"
 	"time"
-)
-
-var (
-	userDao = mongodao.NewUserDao()
 )
 
 type UserWeb struct {
