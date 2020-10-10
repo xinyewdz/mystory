@@ -45,7 +45,12 @@ func (dao *UserDao) List() []*entity.DBUser {
 }
 
 func (dao *UserDao) Get(id string) *entity.DBUser {
-	return dao.GetObj(id).(*entity.DBUser)
+	obj := dao.GetObj(id)
+	uobj, ok := obj.(*entity.DBUser)
+	if ok {
+		return uobj
+	}
+	return nil
 }
 
 func (dao *UserDao) GetByPhone(phone string) *entity.DBUser {

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="static/bulma/bulma.css"></script>
+        <script src="static/vue/vue.js"></script>
+        <script src="static/vue/vue-resource.min.js"></script>
+        <script src="static/js/common.js"></script>
+    </head>
+    <body>
+        <div class="container" id="container">
+            <div class="tabs">
+                <ul>
+                    <li v-on:click="showStoryList"><a>故事列表</a></li>
+                    <li v-on:click="showUserList"><a>用户列表</a></li>
+                </ul>
+            </div>
+            <div  v-if="isStoryList">
+                <table class="table" v-if="!isStoryPlay">
+                    <tr>
+                        <th>id</th>
+                        <th>故事</th>
+                        <th></th>
+                    </tr>
+                    <tr v-for=" item in storyList">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td v-on:click="getStoryPlayList(item.id)"><a>统计</a></td>
+                    </tr>
+                </table>
+                <table class="table" v-else>
+                    <tr>
+                        <th>id</th>
+                        <th>名字</th>
+                        <th>播放时间</th>
+                    </tr>
+                    <tr v-for=" item in storyPlayList">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.playTime}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div v-if="isUserList">
+                <table class="table" v-if="!isUserPlay" >
+                    <tr>
+                        <th>id</th>
+                        <th>用户</th>
+                        <th></th>
+                    </tr>
+                    <tr v-for=" item in userList">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td v-on:click="getUserPlayList(item.id)"><a>统计</a></td>
+                    </tr>
+                </table>
+                <table class="table" v-else>
+                    <tr>
+                        <th>id</th>
+                        <th>名字</th>
+                        <th>播放时间</th>
+                    </tr>
+                    <tr v-for=" item in userPlayList">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.playTime}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </body>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el:"#container",
+            data:{
+                isStoryList:true,
+                isUserList:false,
+                isStoryPlay:false,
+                isUserPlay:false,
+                storyList:[],
+                userList:[],
+                storyPlayList:[],
+                userPlayList:[]
+            },
+            methods:{
+                showUserList:function(){
+                    console.log("show userlist")
+                    vue.getUserList();
+                    vue.isUserList = true;
+                    vue.isStoryList = false;
+                    vue.isUserPlay = false;
+                },
+                showStoryList:function(){
+                    vue.getStoryList();
+                    vue.isUserList = false;
+                    vue.isStoryList = true;
+                    vue.isStoryPlay = false;
+                },
+                getStoryList:function(){
+                    app.request("/list",{},function(data){
+                        vue.storyList=data;
+                    });
+                
+                },
+                getUserList:function(){
+                    app.request("/user/list",{},function(data){
+                        vue.userList=data;
+                    });
+                },
+                getStoryPlayList:function(id){
+                    vue.isStoryPlay=true;
+                    let data = {
+                        "id":id
+                    }
+                    app.request("/admin/story/playDetail",data,function(data){
+                        vue.storyPlayList = data;
+                    });
+                },
+                getUserPlayList:function(id){
+                    vue.isUserPlay=true;
+                    let data = {
+                        "id":id
+                    }
+                    app.request("/admin/user/playDetail",data,function(data){
+                        vue.userPlayList=data;
+                    });
+                }
+            }
+        })
+    </script>
+</html>

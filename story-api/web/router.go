@@ -3,7 +3,6 @@ package web
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"story-api/common"
 	"story-api/store/entity"
@@ -22,6 +21,7 @@ var publicUrl map[string]interface{} = make(map[string]interface{})
 func init() {
 	redisClient = redisutil.Client
 	publicUrl["/login"] = nil
+	publicUrl["/admin/login"] = nil
 	publicUrl["/play/list"] = nil
 	publicUrl["/play"] = nil
 }
@@ -32,6 +32,11 @@ func (router RouterHttpHandler) ServeHTTP(resp http.ResponseWriter, req *http.Re
 	path := req.URL.Path
 	mainLog.Info("request ", zap.String("path", path))
 	resp.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	resp.Header().Set("Access-Control-Allow-Credentials", "true")
+	resp.Header().Set("Access-Control-Allow-Headers", "content-type, token, userid")
+	resp.Header().Set("Access-Control-Allow-Origin", "*")
+	resp.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
+	resp.Header().Set("Content-Type", "application/json")
 	resp.WriteHeader(200)
 	defer func() {
 		if err := recover(); err != nil {
@@ -41,7 +46,7 @@ func (router RouterHttpHandler) ServeHTTP(resp http.ResponseWriter, req *http.Re
 				Msg:  "server error",
 			}
 			mainLog.Error("request error", zap.String("path", path), zap.Any("error", err))
-			writeResp(resp, ap)
+			WriteResp(resp, ap)
 		}
 	}()
 	var user *entity.DBUser = nil
@@ -62,7 +67,7 @@ func (router RouterHttpHandler) ServeHTTP(resp http.ResponseWriter, req *http.Re
 		}
 	}
 	if apiResp != nil {
-		writeResp(resp, apiResp)
+		WriteResp(resp, apiResp)
 	}
 }
 
@@ -85,14 +90,4 @@ func auth(req *http.Request) *entity.DBUser {
 	user := &entity.DBUser{}
 	json.Unmarshal([]byte(userRes.Val()), user)
 	return user
-}
-
-func resolveBody(req *http.Request, reqBody interface{}) {
-	data, _ := ioutil.ReadAll(req.Body)
-	json.Unmarshal(data, reqBody)
-}
-
-func writeResp(resp http.ResponseWriter, apiResp *common.ApiResponse) {
-	respData, _ := json.Marshal(apiResp)
-	resp.Write(respData)
 }

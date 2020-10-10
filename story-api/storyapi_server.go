@@ -5,13 +5,13 @@ import (
 	"log"
 	"net/http"
 	"story-api/web"
+	"story-api/web/admin"
 )
 
 var (
 	storyWeb             = new(web.StoryWeb)
 	userWeb              = new(web.UserWeb)
-	userAdminWeb         = new(web.UserAdminWeb)
-	storyAdminWeb        = new(web.StoryAdminWeb)
+	userAdminWeb         = new(admin.UserAdminWeb)
 	enableStoryList bool = true
 	help                 = false
 )
@@ -48,8 +48,8 @@ func regist(mux *http.ServeMux) {
 
 func registryAdmin(routeMap map[string]web.RouterHttpHandler) {
 	routeMap["/admin/login"] = userAdminWeb.Login
-	routeMap["/admin/user/playDetail"] = userAdminWeb.ListStoryPlayDetail
-	routeMap["/admin/story/playDetail"] = storyAdminWeb.ListUserPlayDetail
+	routeMap["/admin/story/playDetail"] = userAdminWeb.ListStoryPlayDetail
+	routeMap["/admin/user/playDetail"] = userAdminWeb.ListUserPlayDetail
 }
 
 func registryStory(routeMap map[string]web.RouterHttpHandler) {

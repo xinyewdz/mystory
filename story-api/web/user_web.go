@@ -19,7 +19,7 @@ type UserWeb struct {
 
 func (web *UserWeb) Login(c context.Context, resp http.ResponseWriter, req *http.Request) *common.ApiResponse {
 	reqBody := make(map[string]string)
-	resolveBody(req, &reqBody)
+	ResolveBody(req, &reqBody)
 	code := reqBody["code"]
 	sResp := util.Code2Session(code)
 	if sResp == nil {

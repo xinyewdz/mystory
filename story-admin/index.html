@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="static/bulma/bulma.css"></script>
+        <script src="static/vue/vue.js"></script>
+        <script src="static/vue/vue-resource.min.js"></script>
+        <script src="static/js/common.js"></script>
+    </head>
+    <body>
+        <div class="container" id="container">
+            <div class="field">
+                <label class="label">手机号</label>
+                <input class="input" type="text" v-model="phone"/>
+            </div>
+            <div class="field">
+                <label class="label">密码</label>
+                <input class="input" type="password" v-model="password"/>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-link" type="submit" v-on:click="login">登录</button>
+                </div>
+                <div class="control">
+                    <button class="button is-link" type="button">取消</button>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el:"#container",
+            data:{
+                phone:"",
+                password:""
+            },
+            methods:{
+                login:function(){
+                    let data = {
+                        "phone":vue.$data.phone,
+                        "password":vue.$data.password
+                    }
+                    app.request("/admin/login",data,function(data){
+                        window.location="statis.html";
+                        app.setToken(data.token);
+                        app.setUser(data);
+                    });
+                }
+            }
+        })
+    </script>
+</html>
