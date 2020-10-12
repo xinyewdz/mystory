@@ -1,12 +1,10 @@
 #!/bin/bash
 env=$1
-if [ -n "$env" ]
-then
-  if [ $env=="prod" ]
-  then
+if [ -n "$env" ];then
+  if [ $env=="prod" ];then
     mv conf/app.conf.prod conf/app.conf
   fi
-fi;
+fi
 
 export GOPROXY=http://goproxy.cn
 GOROOT=/usr/local/go
