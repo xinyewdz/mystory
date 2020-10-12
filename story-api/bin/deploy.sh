@@ -1,7 +1,6 @@
 #!/bin/bash
-pid=`ps -ef|grep storyapi_server.bin |grep -v grep | awk '{printf $2}'`
+pid=`ps -ef|grep storyapi_server |grep -v grep | awk '{printf $2}'`
 if [ -n $pid ]; then
- kill $Pid
+ kill $pid
 fi
-chmod +x storyapi_server.bin
-nohup ./storyapi_server.bin &
+nohup go run storyapi_server.go &
