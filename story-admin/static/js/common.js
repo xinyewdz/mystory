@@ -1,3 +1,4 @@
+//var host = "https://api.story.wenqiuqiu.com";
 var host = "http://localhost:8060";
 
 var app={

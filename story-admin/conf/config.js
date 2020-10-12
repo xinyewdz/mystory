@@ -1,1 +1,0 @@
-var host = "http://localhost:8060";
