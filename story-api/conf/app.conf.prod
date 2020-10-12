@@ -1,0 +1,14 @@
+upyun.host=http://v0.api.upyun.com
+upyun.user=upload
+upyun.password=bvlVIhEFJvZeEqc7YThUuMVyYpjpNNtU
+
+wx.appid=wx29a84a011da60ef8
+wx.secretkey=b73106032b40fdab1965d22cc60514d9
+
+mongodb.host=wenqiuqiu.com:27017
+mongodb.database=story
+mongodb.user=root
+mongodb.password=mobtech2019java
+
+redis.host=wenqiuqiu.com:6388
+redis.password=mobtech2019java

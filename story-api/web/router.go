@@ -33,10 +33,9 @@ func (router RouterHttpHandler) ServeHTTP(resp http.ResponseWriter, req *http.Re
 	mainLog.Info("request ", zap.String("path", path))
 	resp.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	resp.Header().Set("Access-Control-Allow-Credentials", "true")
-	resp.Header().Set("Access-Control-Allow-Headers", "content-type, token, userid")
+	resp.Header().Set("Access-Control-Allow-Headers", "*")
 	resp.Header().Set("Access-Control-Allow-Origin", "*")
 	resp.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
-	resp.Header().Set("Content-Type", "application/json")
 	resp.WriteHeader(200)
 	defer func() {
 		if err := recover(); err != nil {
